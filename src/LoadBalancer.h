@@ -17,12 +17,11 @@
 #include <boost/thread/thread.hpp>
 
 namespace pppm {
-    namespace ip = boost::asio::ip;
 
     class LoadBalancer : public boost::enable_shared_from_this<LoadBalancer> {
     public:
 
-        typedef ip::tcp::socket socket_type;
+        typedef boost::asio::ip::tcp::socket socket_type;
         typedef boost::shared_ptr<LoadBalancer> ptr_type;
 
         LoadBalancer(boost::asio::io_service &ios)
@@ -80,15 +79,12 @@ namespace pppm {
         public:
             acceptor(
                 boost::asio::io_service &io_service,
-                boost::asio::io_service &pool,
-                unsigned short local_port,
+                boost::asio::ip::tcp::acceptor &acceptor_,
                 const std::string &upstream_host, unsigned short upstream_port
             ) : io_service_(io_service),
-                localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0")),
-                acceptor_(io_service_, ip::tcp::endpoint(localhost_address, local_port)),
+                acceptor_(acceptor_),
                 upstream_port_(upstream_port),
-                upstream_host_(upstream_host),
-                io_pool_(pool) {};
+                upstream_host_(upstream_host) {};
 
             bool accept_connections();
 
@@ -96,9 +92,7 @@ namespace pppm {
             void handle_accept(const boost::system::error_code &error);
 
             boost::asio::io_service &io_service_;
-            boost::asio::io_service &io_pool_;
-            ip::address_v4 localhost_address;
-            ip::tcp::acceptor acceptor_;
+            boost::asio::ip::tcp::acceptor &acceptor_;
             ptr_type session_;
             unsigned short upstream_port_;
             std::string upstream_host_;
