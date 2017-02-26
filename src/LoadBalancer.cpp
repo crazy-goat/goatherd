@@ -6,9 +6,6 @@
 
 void pppm::LoadBalancer::acceptor::handle_accept(const boost::system::error_code &error) {
     if (!error) {
-//        io_pool_.post(
-//            boost::bind(&LoadBalancer::start, session_, "127.0.0.1", upstream_port_)
-//        );
         session_->start( "127.0.0.1", upstream_port_);
 
         if (!accept_connections()) {
@@ -21,7 +18,6 @@ void pppm::LoadBalancer::acceptor::handle_accept(const boost::system::error_code
 
 bool pppm::LoadBalancer::acceptor::accept_connections() {
     try {
-        std::cout << "Waiting for conn" << std::endl;
         session_ = boost::shared_ptr<LoadBalancer>(new LoadBalancer(io_service_));
         acceptor_.async_accept(
             session_->downstream_socket(),
@@ -56,10 +52,10 @@ void pppm::LoadBalancer::handle_upstream_write(const boost::system::error_code &
     if (!error) {
         downstream_socket_.async_read_some(
             boost::asio::buffer(downstream_data_, max_data_length),
-            boost::bind(&LoadBalancer::handle_downstream_read,
+            strand_.wrap(boost::bind(&LoadBalancer::handle_downstream_read,
                         shared_from_this(),
                         boost::asio::placeholders::error,
-                        boost::asio::placeholders::bytes_transferred));
+                        boost::asio::placeholders::bytes_transferred)));
     } else
         close();
 }
@@ -69,9 +65,9 @@ pppm::LoadBalancer::handle_downstream_read(const boost::system::error_code &erro
     if (!error) {
         async_write(upstream_socket_,
                     boost::asio::buffer(downstream_data_, bytes_transferred),
-                    boost::bind(&LoadBalancer::handle_upstream_write,
+                    strand_.wrap(boost::bind(&LoadBalancer::handle_upstream_write,
                                 shared_from_this(),
-                                boost::asio::placeholders::error));
+                                boost::asio::placeholders::error)));
     } else
         close();
 }
@@ -80,10 +76,10 @@ void pppm::LoadBalancer::handle_downstream_write(const boost::system::error_code
     if (!error) {
         upstream_socket_.async_read_some(
             boost::asio::buffer(upstream_data_, max_data_length),
-            boost::bind(&LoadBalancer::handle_upstream_read,
+            strand_.wrap(boost::bind(&LoadBalancer::handle_upstream_read,
                         shared_from_this(),
                         boost::asio::placeholders::error,
-                        boost::asio::placeholders::bytes_transferred));
+                        boost::asio::placeholders::bytes_transferred)));
     } else
         close();
 }

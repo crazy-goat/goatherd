@@ -26,11 +26,18 @@ namespace pppm {
 
         LoadBalancer(boost::asio::io_service &ios)
             : downstream_socket_(ios),
-              upstream_socket_(ios) {}
+              upstream_socket_(ios),
+            strand_(ios){};
 
         socket_type &downstream_socket() {
             // Client socket
             return downstream_socket_;
+        }
+
+        socket_type& upstream_socket()
+        {
+            // Remote server socket
+            return upstream_socket_;
         }
 
         void start(const std::string &upstream_host, unsigned short upstream_port);
@@ -73,18 +80,22 @@ namespace pppm {
         unsigned char upstream_data_[max_data_length];
 
         boost::mutex mutex_;
-
+        /// Strand to ensure the connection's handlers are not called concurrently.
+        boost::asio::io_service::strand strand_;
     public:
         class acceptor {
         public:
             acceptor(
                 boost::asio::io_service &io_service,
-                boost::asio::ip::tcp::acceptor &acceptor_,
+                unsigned short local_port,
                 const std::string &upstream_host, unsigned short upstream_port
             ) : io_service_(io_service),
-                acceptor_(acceptor_),
+                localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0")),
+                acceptor_(io_service_, boost::asio::ip::tcp::endpoint(localhost_address, local_port)),
                 upstream_port_(upstream_port),
-                upstream_host_(upstream_host) {};
+                upstream_host_(upstream_host) {
+                acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+            };
 
             bool accept_connections();
 
@@ -92,7 +103,8 @@ namespace pppm {
             void handle_accept(const boost::system::error_code &error);
 
             boost::asio::io_service &io_service_;
-            boost::asio::ip::tcp::acceptor &acceptor_;
+            boost::asio::ip::address_v4 localhost_address;
+            boost::asio::ip::tcp::acceptor acceptor_;
             ptr_type session_;
             unsigned short upstream_port_;
             std::string upstream_host_;

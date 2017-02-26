@@ -16,20 +16,16 @@ int main(int argc, char *argv[]) {
     boost::asio::io_service::work work(ios);
     boost::thread_group threadpool;
     try {
-        boost::asio::ip::address_v4 localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0"));
-        boost::asio::ip::tcp::acceptor acceptor_(ios, boost::asio::ip::tcp::endpoint(localhost_address, local_port));
+
+        pppm::LoadBalancer::acceptor acceptor(ios, local_port, forward_host, forward_port);
+        acceptor.accept_connections();
 
         for (int i = 0; i < 4; i++) {
             threadpool.create_thread(
                 boost::bind(&boost::asio::io_service::run, &ios)
             );
-            pppm::LoadBalancer::acceptor *test = new pppm::LoadBalancer::acceptor(ios, acceptor_, forward_host, forward_port);
-            ios.post(
-                boost::bind(&pppm::LoadBalancer::acceptor::accept_connections, test)
-            );
         }
-
-        ios.run();
+        threadpool.join_all();
     }
     catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
