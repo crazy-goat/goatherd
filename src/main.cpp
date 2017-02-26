@@ -13,22 +13,19 @@ int main(int argc, char *argv[]) {
     const std::string forward_host = argv[2];
 
     boost::asio::io_service ios;
-    boost::asio::io_service::work work(ios);
+    boost::asio::io_service pool;
+    boost::asio::io_service::work work(pool);
     boost::thread_group threadpool;
     try {
-        boost::asio::ip::address_v4 localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0"));
-        boost::asio::ip::tcp::acceptor acceptor_(ios, boost::asio::ip::tcp::endpoint(localhost_address, local_port));
+        pppm::LoadBalancer::acceptor acceptor(ios, pool, local_port, forward_host, forward_port);
 
         for (int i = 0; i < 4; i++) {
             threadpool.create_thread(
-                boost::bind(&boost::asio::io_service::run, &ios)
-            );
-            pppm::LoadBalancer::acceptor *test = new pppm::LoadBalancer::acceptor(ios, acceptor_, forward_host, forward_port);
-            ios.post(
-                boost::bind(&pppm::LoadBalancer::acceptor::accept_connections, test)
+                boost::bind(&boost::asio::io_service::run, &pool)
             );
         }
 
+        acceptor.accept_connections();
         ios.run();
     }
     catch (std::exception &e) {
