@@ -123,7 +123,7 @@ void pppm::LoadBalancer::handle_upstream_connect(const boost::system::error_code
 void pppm::LoadBalancer::start(const std::string &upstream_host, unsigned short upstream_port) {
     // Attempt connection to remote server (upstream side)
     upstream_socket_.async_connect(
-        ip::tcp::endpoint(
+        boost::asio::ip::tcp::endpoint(
             boost::asio::ip::address::from_string(upstream_host),
             upstream_port),
         boost::bind(&LoadBalancer::handle_upstream_connect,
