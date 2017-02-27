@@ -1,30 +1,30 @@
 // Distributed under the Boost Software License, Version 1.0.
 
 #include "LoadBalancer.h"
+#include "ConfigLoader.h"
 
 int main(int argc, char *argv[]) {
-    if (argc != 4) {
-        std::cerr << "usage: tcpproxy_server <local port> <forward host ip> <forward port>" << std::endl;
+    if (argc != 2) {
+        std::cerr << "usage: pppm <config_file.json>" << std::endl;
         return 1;
     }
-
-    const unsigned short local_port = static_cast<unsigned short>(::atoi(argv[1]));
-    const unsigned short forward_port = static_cast<unsigned short>(::atoi(argv[3]));
-    const std::string forward_host = argv[2];
 
     boost::asio::io_service ios;
     boost::asio::io_service::work work(ios);
     boost::thread_group threadpool;
     try {
 
-        pppm::LoadBalancer::acceptor acceptor(ios, local_port, forward_host, forward_port);
+        pppm::ConfigLoader config(argv[1]);
+
+        pppm::LoadBalancer::acceptor acceptor(ios, config);
         acceptor.accept_connections();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < config.getThreads(); i++) {
             threadpool.create_thread(
                 boost::bind(&boost::asio::io_service::run, &ios)
             );
         }
+
         threadpool.join_all();
     }
     catch (std::exception &e) {

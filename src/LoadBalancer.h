@@ -15,6 +15,7 @@
 #include <boost/asio.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
+#include "ConfigLoader.h"
 
 namespace pppm {
 
@@ -69,7 +70,7 @@ namespace pppm {
         void handle_upstream_write(const boost::system::error_code &error);
         // *** End Of Section B ***
 
-        void close();
+        void close(const boost::system::error_code &error);
         socket_type downstream_socket_;
         socket_type upstream_socket_;
 
@@ -87,27 +88,27 @@ namespace pppm {
         public:
             acceptor(
                 boost::asio::io_service &io_service,
-                unsigned short local_port,
-                const std::string &upstream_host, unsigned short upstream_port
+                ConfigLoader &config
             ) : io_service_(io_service),
+                config_(config),
                 localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0")),
-                acceptor_(io_service_, boost::asio::ip::tcp::endpoint(localhost_address, local_port)),
-                upstream_port_(upstream_port),
-                upstream_host_(upstream_host) {
+                acceptor_(io_service_, boost::asio::ip::tcp::endpoint(localhost_address, config.getListenPort())),
+                upstream_host_(config.getHostname()) {
                 acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+                requestCount = 0;
             };
 
             bool accept_connections();
 
         private:
             void handle_accept(const boost::system::error_code &error);
-
+            ConfigLoader &config_;
             boost::asio::io_service &io_service_;
             boost::asio::ip::address_v4 localhost_address;
             boost::asio::ip::tcp::acceptor acceptor_;
             ptr_type session_;
-            unsigned short upstream_port_;
             std::string upstream_host_;
+            unsigned int requestCount;
         };
     };
 }
