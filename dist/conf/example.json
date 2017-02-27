@@ -1,11 +1,9 @@
 {
-  "listenPort": 1234, //
-  "workers": {
-    "min": 1,
-    "max": 10,
-    "iddle_time": 60, //seconds
-    "port:": 5000,
-    "request_limit": 1000,
-    "command" : "php-cgi /path/to/file.php %port%"
+  "listenPort": 1234,
+  "threads": 3,
+  "worker": {
+    "count": 5,
+    "startPort": 5000,
+    "hostname": "127.0.0.1"
   }
 }
