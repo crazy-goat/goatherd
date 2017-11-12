@@ -8,3 +8,4 @@ CTestTestfile.cmake
 /.idea/
 /build/
 shepherd
+cmake-build-debug
