@@ -17,7 +17,7 @@
 #include <boost/thread/thread.hpp>
 #include "ConfigLoader.h"
 
-namespace pppm {
+namespace crazygoat::shepherd {
 
     class LoadBalancer : public boost::enable_shared_from_this<LoadBalancer> {
     public:

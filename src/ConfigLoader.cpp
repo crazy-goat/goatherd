@@ -4,22 +4,24 @@
 
 #include "ConfigLoader.h"
 
-int pppm::ConfigLoader::getListenPort() const {
-    return listenPort;
-}
+namespace crazygoat::shepherd {
+    int ConfigLoader::getListenPort() const {
+        return listenPort;
+    }
 
-int pppm::ConfigLoader::getThreads() const {
-    return threads;
-}
+    int ConfigLoader::getThreads() const {
+        return threads;
+    }
 
-int pppm::ConfigLoader::getWorkersCount() const {
-    return workersCount;
-}
+    int ConfigLoader::getWorkersCount() const {
+        return workersCount;
+    }
 
-int pppm::ConfigLoader::getStartPort() const {
-    return startPort;
-}
+    int ConfigLoader::getStartPort() const {
+        return startPort;
+    }
 
-const std::string &pppm::ConfigLoader::getHostname() const {
-    return hostname;
+    const std::string &ConfigLoader::getHostname() const {
+        return hostname;
+    }
 }

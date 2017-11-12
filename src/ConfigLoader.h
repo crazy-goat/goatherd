@@ -8,7 +8,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-namespace pppm {
+namespace crazygoat::shepherd {
 
     class ConfigLoader {
     protected:
@@ -26,7 +26,7 @@ namespace pppm {
             this->threads = config.get<int>("threads");
             this->workersCount = config.get<int>("worker.count");
             this->startPort = config.get<int>("worker.startPort");
-            this->hostname = config.get<std::string >("worker.hostname");
+            this->hostname = config.get<std::string>("worker.hostname");
         }
 
         int getListenPort() const;

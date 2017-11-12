@@ -1,31 +1,38 @@
 // Distributed under the Boost Software License, Version 1.0.
 
 #include "LoadBalancer.h"
-#include "ConfigLoader.h"
+#include "Worker.h"
+
+using namespace crazygoat::shepherd;
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
-        std::cerr << "usage: pppm <config_file.json>" << std::endl;
+        std::cerr << "usage: shepherd <config_file.json>" << std::endl;
         return 1;
     }
 
+    Worker w("/bin/bash");
+    w.spawn();
+    Worker w2("/bin/bash");
+    w2.spawn();
+
     boost::asio::io_service ios;
     boost::asio::io_service::work work(ios);
-    boost::thread_group threadpool;
+    boost::thread_group threadPool;
     try {
 
-        pppm::ConfigLoader config(argv[1]);
+        ConfigLoader config(argv[1]);
 
-        pppm::LoadBalancer::acceptor acceptor(ios, config);
+        LoadBalancer::acceptor acceptor(ios, config);
         acceptor.accept_connections();
 
         for (int i = 0; i < config.getThreads(); i++) {
-            threadpool.create_thread(
-                boost::bind(&boost::asio::io_service::run, &ios)
+            threadPool.create_thread(
+                    boost::bind(&boost::asio::io_service::run, &ios)
             );
         }
 
-        threadpool.join_all();
+        threadPool.join_all();
     }
     catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
