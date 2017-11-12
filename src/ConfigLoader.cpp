@@ -21,7 +21,11 @@ namespace crazygoat::shepherd {
         return startPort;
     }
 
-    const std::string &ConfigLoader::getHostname() const {
-        return hostname;
+    const std::string &ConfigLoader::getWorkerCommand() const {
+        return workerCommand;
+    }
+
+    const std::string &ConfigLoader::getWorkerParams() const {
+        return workerParams;
     }
 }

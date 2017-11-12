@@ -1,9 +1,8 @@
 {
   "listenPort": 1234,
   "threads": 3,
-  "worker": {
-    "count": 5,
-    "startPort": 5000,
-    "hostname": "127.0.0.1"
-  }
+  "worker_command" : "php",
+  "worker_params": "app.php 0.0.0.0:%%port%%",
+  "worker_count": 5,
+  "worker_start_port": 5000
 }

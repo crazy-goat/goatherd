@@ -16,7 +16,12 @@ namespace crazygoat::shepherd {
         int threads;
         int workersCount;
         int startPort;
-        std::string hostname;
+        std::string workerCommand;
+        std::string workerParams;
+    public:
+        const std::string &getWorkerCommand() const;
+
+        const std::string &getWorkerParams() const;
 
     public:
         ConfigLoader(const std::string &configFile) {
@@ -24,9 +29,10 @@ namespace crazygoat::shepherd {
             boost::property_tree::json_parser::read_json(configFile, config);
             this->listenPort = config.get<int>("listenPort");
             this->threads = config.get<int>("threads");
-            this->workersCount = config.get<int>("worker.count");
-            this->startPort = config.get<int>("worker.startPort");
-            this->hostname = config.get<std::string>("worker.hostname");
+            this->workersCount = config.get<int>("worker_count");
+            this->startPort = config.get<int>("worker_start_port");
+            this->workerCommand = config.get<std::string>("worker_command");
+            this->workerParams = config.get<std::string>("worker_params");
         }
 
         int getListenPort() const;
@@ -36,8 +42,6 @@ namespace crazygoat::shepherd {
         int getWorkersCount() const;
 
         int getStartPort() const;
-
-        const std::string &getHostname() const;
     };
 
 }

@@ -6,13 +6,22 @@
 #define SHEPHERD_WATCHDOG_H
 
 #include <boost/asio/io_service.hpp>
+#include <boost/date_time/posix_time/posix_time_duration.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include "Worker.h"
 
 namespace crazygoat::shepherd {
     class WatchDog {
     protected:
         boost::asio::io_service &ios;
+        std::string command, params;
+        int count, start_port;
+        std::vector<std::shared_ptr<Worker> > workers;
+        std::shared_ptr<boost::asio::deadline_timer> timer;
+        void watch();
     public:
-        WatchDog(boost::asio::io_service &ios);
+        WatchDog(boost::asio::io_service &ios, std::string command, std::string params, int count, int start_port);
+        void spawn();
     };
 }
 

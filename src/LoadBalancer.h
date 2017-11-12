@@ -93,7 +93,7 @@ namespace crazygoat::shepherd {
                 config_(config),
                 localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0")),
                 acceptor_(io_service_, boost::asio::ip::tcp::endpoint(localhost_address, config.getListenPort())),
-                upstream_host_(config.getHostname()) {
+                upstream_host_("127.0.0.1") {
                 acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
                 requestCount = 0;
             };
