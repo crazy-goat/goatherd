@@ -13,13 +13,15 @@ namespace crazygoat::shepherd {
                                                                 this->replacePort(this->params, "%%port%%",
                                                                                   std::to_string(
                                                                                           this->port)), //set the input
-                                                                boost::process::std_in.close(),
-                                                                boost::process::std_out >
-                                                                boost::process::null, //so it can be written without anything
-                                                                boost::process::std_err > boost::process::null);
+                                                                boost::process::std_in.close());
+        Worker::isFree = true;
     }
 
-    Worker::Worker(std::string command, std::string params, int port) : command(command), params(params), port(port) {}
+    Worker::Worker(std::string command, std::string params, int port) :
+            command(command),
+            params(params),
+            port(port),
+            isFree(false){}
 
     std::vector<std::string> Worker::replacePort(std::   string subject, const std::string &search,
                                     const std::string &replace) {
@@ -31,5 +33,18 @@ namespace crazygoat::shepherd {
 
     bool Worker::isWorking() {
         this->process->running();
+    }
+
+    bool Worker::isIsFree() const {
+        return isFree;
+    }
+
+    void Worker::setIsFree(bool isFree) {
+
+        Worker::isFree = isFree;
+    }
+
+    unsigned short Worker::getPort() const {
+        return port;
     }
 }

@@ -16,6 +16,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include "ConfigLoader.h"
+#include "WatchDog.h"
 
 namespace crazygoat::shepherd {
 
@@ -25,10 +26,11 @@ namespace crazygoat::shepherd {
         typedef boost::asio::ip::tcp::socket socket_type;
         typedef boost::shared_ptr<LoadBalancer> ptr_type;
 
-        LoadBalancer(boost::asio::io_service &ios)
+        LoadBalancer(boost::asio::io_service &ios, std::shared_ptr<Worker> worker)
             : downstream_socket_(ios),
               upstream_socket_(ios),
-            strand_(ios){};
+            strand_(ios),
+            worker(worker){};
 
         socket_type &downstream_socket() {
             // Client socket
@@ -45,6 +47,8 @@ namespace crazygoat::shepherd {
         void handle_upstream_connect(const boost::system::error_code &error);
 
     private:
+
+        std::shared_ptr<Worker>  worker;
 
         /*
          * Section A: Remote Server --> Proxy --> Client
@@ -88,12 +92,15 @@ namespace crazygoat::shepherd {
         public:
             acceptor(
                 boost::asio::io_service &io_service,
-                ConfigLoader &config
+                ConfigLoader &config,
+                WatchDog &watchDog
             ) : io_service_(io_service),
                 config_(config),
                 localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0")),
                 acceptor_(io_service_, boost::asio::ip::tcp::endpoint(localhost_address, config.getListenPort())),
-                upstream_host_("127.0.0.1") {
+                upstream_host_("127.0.0.1"),
+                watchDog(watchDog)
+                {
                 acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
                 requestCount = 0;
             };
@@ -109,6 +116,8 @@ namespace crazygoat::shepherd {
             ptr_type session_;
             std::string upstream_host_;
             unsigned int requestCount;
+            WatchDog &watchDog;
+            unsigned short upstream_port_;
         };
     };
 }

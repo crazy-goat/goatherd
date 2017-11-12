@@ -11,6 +11,7 @@ namespace crazygoat::shepherd {
                        int start_port) : ios(ios), command(command), params(params), count(count),
                                          start_port(start_port) {
         this->timer = std::make_shared<boost::asio::deadline_timer>(this->ios, boost::posix_time::seconds(1));
+        this->requestsCount = 0;
     }
 
     void WatchDog::spawn() {
@@ -24,7 +25,7 @@ namespace crazygoat::shepherd {
             tmp->spawn();
             this->workers.push_back(std::move(tmp));
         }
-        this->timer->async_wait(boost::bind(&WatchDog::watch, this));
+        //this->timer->async_wait(boost::bind(&WatchDog::watch, this));
     }
 
     void WatchDog::watch() {
@@ -34,8 +35,17 @@ namespace crazygoat::shepherd {
             }
         }
 
-        std::cout<<"Check workers"<<std::endl;
         this->timer->expires_at(this->timer->expires_at() + boost::posix_time::milliseconds(100));
         this->timer->async_wait(boost::bind(&WatchDog::watch, this));
+    }
+
+    std::shared_ptr<Worker> WatchDog::getFreeWorker() {
+        while (1) {
+            std::shared_ptr<Worker> worker = this->workers[this->requestsCount%this->count];
+            this->requestsCount++;
+            if (worker->isIsFree()) {
+                return worker;
+            }
+        }
     }
 }

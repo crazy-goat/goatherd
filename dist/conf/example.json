@@ -4,5 +4,5 @@
   "worker_command" : "php",
   "worker_params": "app.php 0.0.0.0:%%port%%",
   "worker_count": 5,
-  "worker_start_port": 5000
+  "worker_start_port": 6000
 }

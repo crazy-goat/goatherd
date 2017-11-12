@@ -16,12 +16,14 @@ namespace crazygoat::shepherd {
         boost::asio::io_service &ios;
         std::string command, params;
         int count, start_port;
+        unsigned int requestsCount;
         std::vector<std::shared_ptr<Worker> > workers;
         std::shared_ptr<boost::asio::deadline_timer> timer;
         void watch();
     public:
         WatchDog(boost::asio::io_service &ios, std::string command, std::string params, int count, int start_port);
         void spawn();
+        std::shared_ptr<Worker> getFreeWorker();
     };
 }
 

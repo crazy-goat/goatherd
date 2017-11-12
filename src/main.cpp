@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         );
         watchDog.spawn();
 
-        LoadBalancer::acceptor acceptor(ios, config);
+        LoadBalancer::acceptor acceptor(ios, config, watchDog);
         acceptor.accept_connections();
 
         for (int i = 0; i < config.getThreads(); i++) {
