@@ -43,8 +43,6 @@ namespace crazygoat::shepherd {
     }
 
     void LoadBalancer::close(const boost::system::error_code &error) {
-        boost::mutex::scoped_lock lock(mutex_);
-
         if (downstream_socket_.is_open()) {
             if (error.value() != 2 || error.value() != 125) {
                 std::string errorMessage = "HTTP/1.x 503 Service Unavailable\r\n"
@@ -58,10 +56,10 @@ namespace crazygoat::shepherd {
             }
 
             downstream_socket_.close();
+            this->worker->setIsFree(true);
         }
 
         if (upstream_socket_.is_open()) {
-            this->worker->setIsFree(true);
             upstream_socket_.close();
         }
     }
@@ -87,7 +85,6 @@ namespace crazygoat::shepherd {
     LoadBalancer::handle_downstream_read(const boost::system::error_code &error,
                                                const size_t &bytes_transferred) {
         if (!error) {
-            this->worker->setIsFree(false);
             async_write(
                     upstream_socket_,
                     boost::asio::buffer(downstream_data_, bytes_transferred),
@@ -163,6 +160,7 @@ namespace crazygoat::shepherd {
 
     void LoadBalancer::start(const std::string &upstream_host, unsigned short upstream_port) {
         // Attempt connection to remote server (upstream side)
+        this->worker->setIsFree(false);
         upstream_socket_.async_connect(
                 boost::asio::ip::tcp::endpoint(
                         boost::asio::ip::address::from_string(upstream_host),

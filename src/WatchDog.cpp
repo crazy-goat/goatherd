@@ -40,6 +40,8 @@ namespace crazygoat::shepherd {
     }
 
     std::shared_ptr<Worker> WatchDog::getFreeWorker() {
+//        this->requestsCount++;
+//        return this->workers[this->requestsCount%this->count];
         while (1) {
             std::shared_ptr<Worker> worker = this->workers[this->requestsCount%this->count];
             this->requestsCount++;
