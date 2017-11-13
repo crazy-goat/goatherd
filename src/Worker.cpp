@@ -31,8 +31,8 @@ namespace crazygoat::shepherd {
         return returnParams;
     }
 
-    bool Worker::isWorking() {
-        this->process->running();
+    bool Worker::isWorking() const{
+        return this->process->running();
     }
 
     bool Worker::isIsFree() const {

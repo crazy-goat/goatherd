@@ -25,7 +25,7 @@ namespace crazygoat::shepherd {
             tmp->spawn();
             this->workers.push_back(std::move(tmp));
         }
-        //this->timer->async_wait(boost::bind(&WatchDog::watch, this));
+        this->timer->async_wait(boost::bind(&WatchDog::watch, this));
     }
 
     void WatchDog::watch() {
