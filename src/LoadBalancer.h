@@ -37,11 +37,6 @@ namespace crazygoat::shepherd {
             return downstream_socket_;
         }
 
-        socket_type &upstream_socket() {
-            // Remote server socket
-            return upstream_socket_;
-        }
-
         void start(const std::string &upstream_host, unsigned short upstream_port);
 
         void handle_upstream_connect(const boost::system::error_code &error);

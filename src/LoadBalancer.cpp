@@ -17,7 +17,7 @@ namespace crazygoat::shepherd {
                 std::cerr << "Failure during call to accept." << std::endl;
             }
         } else {
-            std::cerr << "Error: " << error.message() << std::endl;
+            std::cerr << "Very bad error: " << error.message() << std::endl;
         }
     }
 
@@ -45,7 +45,8 @@ namespace crazygoat::shepherd {
 
     void LoadBalancer::close(const boost::system::error_code &error) {
         if (downstream_socket_.is_open()) {
-            if (error.value() != 2 || error.value() != 125) {
+            if (error.value() != 2 && error.value() != 125) {
+                std::cerr << "503: " << error.value() << " : " <<error.message() << std::endl;
                 std::string errorMessage = "HTTP/1.x 503 Service Unavailable\r\n"
                         "Content-Type' => 'text/plain\r\n"
                         "\r\n"
