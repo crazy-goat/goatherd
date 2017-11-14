@@ -15,14 +15,17 @@ namespace crazygoat::shepherd {
         std::string command, params;
         unsigned short port;
         std::shared_ptr<boost::process::child> process;
-        std::vector<std::string> replacePort(std::string subject, const std::string& search,  const std::string& replace);
-        bool isFree;
+
+        std::vector<std::string>
+        replacePort(std::string subject, const std::string &search, const std::string &replace);
+
     public:
         unsigned short getPort() const;
-        bool isIsFree() const;
-        void setIsFree(bool isFree);
+
         Worker(std::string command, std::string params, int port);
+
         void spawn();
+
         bool isWorking() const;
     };
 }

@@ -3,6 +3,7 @@
 //
 
 #include "LoadBalancer.h"
+
 namespace crazygoat::shepherd {
 
     void LoadBalancer::acceptor::handle_accept(const boost::system::error_code &error) {
@@ -22,7 +23,7 @@ namespace crazygoat::shepherd {
 
     bool LoadBalancer::acceptor::accept_connections() {
         try {
-            std::shared_ptr<Worker> worker= this->watchDog.getFreeWorker();
+            std::shared_ptr<Worker> worker = this->watchDog.getFreeWorker();
             this->upstream_port_ = worker->getPort();
             session_ = boost::shared_ptr<LoadBalancer>(new LoadBalancer(io_service_, worker));
             acceptor_.async_accept(
@@ -82,7 +83,7 @@ namespace crazygoat::shepherd {
 
     void
     LoadBalancer::handle_downstream_read(const boost::system::error_code &error,
-                                               const size_t &bytes_transferred) {
+                                         const size_t &bytes_transferred) {
         if (!error) {
             async_write(
                     upstream_socket_,
