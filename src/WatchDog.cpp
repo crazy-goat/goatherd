@@ -35,19 +35,11 @@ namespace crazygoat::shepherd {
             }
         }
 
-        this->timer->expires_at(this->timer->expires_at() + boost::posix_time::milliseconds(100));
+        this->timer->expires_at(this->timer->expires_at() + boost::posix_time::milliseconds(1000));
         this->timer->async_wait(boost::bind(&WatchDog::watch, this));
     }
 
     std::shared_ptr<Worker> WatchDog::getFreeWorker() {
-//        this->requestsCount++;
-//        return this->workers[this->requestsCount%this->count];
-        while (1) {
-            std::shared_ptr<Worker> worker = this->workers[this->requestsCount%this->count];
-            this->requestsCount++;
-            if (worker->isIsFree()) {
-                return worker;
-            }
-        }
+        return this->workers[(++this->requestsCount)%this->count];
     }
 }

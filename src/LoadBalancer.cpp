@@ -56,7 +56,6 @@ namespace crazygoat::shepherd {
             }
 
             downstream_socket_.close();
-            this->worker->setIsFree(true);
         }
 
         if (upstream_socket_.is_open()) {
@@ -160,7 +159,6 @@ namespace crazygoat::shepherd {
 
     void LoadBalancer::start(const std::string &upstream_host, unsigned short upstream_port) {
         // Attempt connection to remote server (upstream side)
-        this->worker->setIsFree(false);
         upstream_socket_.async_connect(
                 boost::asio::ip::tcp::endpoint(
                         boost::asio::ip::address::from_string(upstream_host),

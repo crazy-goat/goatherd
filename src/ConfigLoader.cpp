@@ -9,10 +9,6 @@ namespace crazygoat::shepherd {
         return listenPort;
     }
 
-    int ConfigLoader::getThreads() const {
-        return threads;
-    }
-
     int ConfigLoader::getWorkersCount() const {
         return workersCount;
     }

@@ -13,7 +13,6 @@ namespace crazygoat::shepherd {
     class ConfigLoader {
     protected:
         int listenPort;
-        int threads;
         int workersCount;
         int startPort;
         std::string workerCommand;
@@ -28,7 +27,6 @@ namespace crazygoat::shepherd {
             boost::property_tree::ptree config;
             boost::property_tree::json_parser::read_json(configFile, config);
             this->listenPort = config.get<int>("listenPort");
-            this->threads = config.get<int>("threads");
             this->workersCount = config.get<int>("worker_count");
             this->startPort = config.get<int>("worker_start_port");
             this->workerCommand = config.get<std::string>("worker_command");
@@ -36,8 +34,6 @@ namespace crazygoat::shepherd {
         }
 
         int getListenPort() const;
-
-        int getThreads() const;
 
         int getWorkersCount() const;
 
