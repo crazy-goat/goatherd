@@ -43,6 +43,14 @@ namespace crazygoat::shepherd {
     }
 
     std::shared_ptr<Worker> WatchDog::getFreeWorker() {
+        std::future<std::shared_ptr<Worker> > fWorker = std::async(&WatchDog::workerIterator, this);
+
+        while (fWorker.wait_for(std::chrono::microseconds(5)) != std::future_status::ready) {}
+
+        return fWorker.get();
+    }
+
+    std::shared_ptr<Worker> WatchDog::workerIterator() {
         do {
             auto worker = this->workers[(++this->requestsCount) % this->count];
             if (!worker->isIsWorking()) {
