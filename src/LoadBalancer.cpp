@@ -8,9 +8,11 @@ namespace crazygoat::shepherd {
 
     void LoadBalancer::acceptor::handle_accept(const boost::system::error_code &error) {
         if (!error) {
+            auto worker = this->watchDog->getFreeWorker();
+            session_->setWorker(worker);
             session_->start(
                     this->upstream_host_,
-                    this->upstream_port_
+                    worker->getPort()
             );
 
             if (!accept_connections()) {
@@ -23,9 +25,7 @@ namespace crazygoat::shepherd {
 
     bool LoadBalancer::acceptor::accept_connections() {
         try {
-            std::shared_ptr<Worker> worker = this->watchDog.getFreeWorker();
-            this->upstream_port_ = worker->getPort();
-            session_ = boost::shared_ptr<LoadBalancer>(new LoadBalancer(io_service_, worker));
+            session_ = boost::shared_ptr<LoadBalancer>(new LoadBalancer(io_service_));
             acceptor_.async_accept(
                     session_->downstream_socket(),
                     boost::bind(
@@ -63,6 +63,8 @@ namespace crazygoat::shepherd {
         if (upstream_socket_.is_open()) {
             upstream_socket_.close();
         }
+
+        this->worker->setIsWorking(false);
     }
 
     void LoadBalancer::handle_upstream_write(const boost::system::error_code &error) {
@@ -172,6 +174,10 @@ namespace crazygoat::shepherd {
                         boost::asio::placeholders::error
                 )
         );
+    }
+
+    void LoadBalancer::setWorker(const std::shared_ptr<Worker> &worker) {
+        LoadBalancer::worker = worker;
     }
 
 }

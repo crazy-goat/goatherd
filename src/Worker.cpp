@@ -15,12 +15,14 @@ namespace crazygoat::shepherd {
                 ), //set the input
                 boost::process::std_in.close()
         );
+        this->isWorking = false;
     }
 
-    Worker::Worker(std::string command, std::string params, int port) :
+    Worker::Worker(std::string command, std::string params, unsigned short port) :
             command(command),
             params(params),
-            port(port) {}
+            port(port),
+            isWorking(false){}
 
     std::vector<std::string> Worker::replacePort(std::string subject, const std::string &search,
                                                  const std::string &replace) {
@@ -30,11 +32,19 @@ namespace crazygoat::shepherd {
         return returnParams;
     }
 
-    bool Worker::isWorking() const {
+    bool Worker::isProcessRunning() const {
         return this->process->running();
     }
 
     unsigned short Worker::getPort() const {
         return port;
+    }
+
+    bool Worker::isIsWorking() const {
+        return isWorking;
+    }
+
+    void Worker::setIsWorking(bool isWorking) {
+        Worker::isWorking = isWorking;
     }
 }

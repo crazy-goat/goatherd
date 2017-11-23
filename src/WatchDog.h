@@ -19,7 +19,6 @@ namespace crazygoat::shepherd {
         unsigned int requestsCount;
         std::vector<std::shared_ptr<Worker> > workers;
         std::shared_ptr<boost::asio::deadline_timer> timer;
-
         void watch();
 
     public:

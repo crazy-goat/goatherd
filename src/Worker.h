@@ -19,14 +19,20 @@ namespace crazygoat::shepherd {
         std::vector<std::string>
         replacePort(std::string subject, const std::string &search, const std::string &replace);
 
+        bool isWorking;
+    public:
+        bool isIsWorking() const;
+
+        void setIsWorking(bool isWorking);
+
     public:
         unsigned short getPort() const;
 
-        Worker(std::string command, std::string params, int port);
+        Worker(std::string command, std::string params, unsigned short port);
 
         void spawn();
 
-        bool isWorking() const;
+        bool isProcessRunning() const;
     };
 }
 

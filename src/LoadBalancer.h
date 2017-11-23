@@ -26,11 +26,10 @@ namespace crazygoat::shepherd {
         typedef boost::asio::ip::tcp::socket socket_type;
         typedef boost::shared_ptr<LoadBalancer> ptr_type;
 
-        LoadBalancer(boost::asio::io_service &ios, std::shared_ptr<Worker> worker)
+        LoadBalancer(boost::asio::io_service &ios)
                 : downstream_socket_(ios),
                   upstream_socket_(ios),
-                  strand_(ios),
-                  worker(worker) {};
+                  strand_(ios){};
 
         socket_type &downstream_socket() {
             // Client socket
@@ -44,6 +43,10 @@ namespace crazygoat::shepherd {
     private:
 
         std::shared_ptr<Worker> worker;
+    public:
+        void setWorker(const std::shared_ptr<Worker> &worker);
+
+    private:
 
         /*
          * Section A: Remote Server --> Proxy --> Client
@@ -88,7 +91,7 @@ namespace crazygoat::shepherd {
             acceptor(
                     boost::asio::io_service &io_service,
                     ConfigLoader &config,
-                    WatchDog &watchDog
+                    std::shared_ptr<WatchDog> watchDog
             ) : io_service_(io_service),
                 config_(config),
                 localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0")),
@@ -109,7 +112,7 @@ namespace crazygoat::shepherd {
             boost::asio::ip::tcp::acceptor acceptor_;
             ptr_type session_;
             std::string upstream_host_;
-            WatchDog &watchDog;
+            std::shared_ptr<WatchDog> watchDog;
             unsigned short upstream_port_;
         };
     };

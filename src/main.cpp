@@ -15,14 +15,14 @@ int main(int argc, char *argv[]) {
     try {
 
         ConfigLoader config(argv[1]);
-        WatchDog watchDog(
+        std::shared_ptr<WatchDog> watchDog = std::make_shared<WatchDog>(
                 ios,
                 config.getWorkerCommand(),
                 config.getWorkerParams(),
                 config.getWorkersCount(),
                 config.getStartPort()
         );
-        watchDog.spawn();
+        watchDog->spawn();
 
         LoadBalancer::acceptor acceptor(ios, config, watchDog);
         acceptor.accept_connections();

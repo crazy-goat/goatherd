@@ -3,6 +3,9 @@
 //
 
 #include <boost/bind.hpp>
+#include <future>
+#include <boost/asio/steady_timer.hpp>
+#include <boost/chrono.hpp>
 #include "WatchDog.h"
 
 namespace crazygoat::shepherd {
@@ -30,7 +33,7 @@ namespace crazygoat::shepherd {
 
     void WatchDog::watch() {
         for (auto worker:this->workers) {
-            if (!worker->isWorking()) {
+            if (!worker->isProcessRunning()) {
                 worker->spawn();
             }
         }
@@ -40,6 +43,11 @@ namespace crazygoat::shepherd {
     }
 
     std::shared_ptr<Worker> WatchDog::getFreeWorker() {
-        return this->workers[(++this->requestsCount) % this->count];
+        do {
+            auto worker = this->workers[(++this->requestsCount) % this->count];
+            if (!worker->isIsWorking()) {
+                return worker;
+            }
+        } while (true);
     }
 }
