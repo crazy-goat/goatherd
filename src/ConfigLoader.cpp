@@ -5,7 +5,7 @@
 #include "ConfigLoader.h"
 
 namespace crazygoat::shepherd {
-    int ConfigLoader::getListenPort() const {
+    unsigned short ConfigLoader::getListenPort() const {
         return listenPort;
     }
 

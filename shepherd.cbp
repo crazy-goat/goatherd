@@ -86,6 +86,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/piotr/build/shepherd/src/Acceptor/TcpAcceptor.cpp">
+			<Option target="shepherd"/>
+		</Unit>
+		<Unit filename="/home/piotr/build/shepherd/src/Acceptor/TcpAcceptor.h">
+			<Option target="shepherd"/>
+		</Unit>
 		<Unit filename="/home/piotr/build/shepherd/src/ConfigLoader.cpp">
 			<Option target="shepherd"/>
 		</Unit>
