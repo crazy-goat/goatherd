@@ -16,10 +16,7 @@ namespace crazygoat::shepherd {
     class Session: public boost::enable_shared_from_this<Session> {
     public:
 
-        Session(boost::asio::io_service &ios)
-        : downstreamSocket(ios),
-        upstreamSocket(ios),
-        strand_(ios){};
+        Session(boost::asio::io_service &ios);
 
         boost::asio::ip::tcp::socket &getDownstreamSocket();
 
@@ -64,11 +61,11 @@ namespace crazygoat::shepherd {
         enum {
             max_data_length = 8192
         }; //8KB
-        unsigned char downstream_data_[max_data_length];
-        unsigned char upstream_data_[max_data_length];
+        unsigned char downstream_data[max_data_length];
+        unsigned char upstream_data[max_data_length];
 
         /// Strand to ensure the connection's handlers are not called concurrently.
-        boost::asio::io_service::strand strand_;
+        boost::asio::io_service::strand strand;
     };
 }
 
