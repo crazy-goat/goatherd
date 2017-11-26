@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(shepherd)
 find_package(Threads)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-set(SOURCE_FILES src/main.cpp src/LoadBalancer.h src/ConfigLoader.h src/LoadBalancer.cpp src/ConfigLoader.cpp src/Worker.cpp src/Worker.h src/WatchDog.cpp src/WatchDog.h src/Acceptor/TcpAcceptor.cpp src/Acceptor/TcpAcceptor.h)
+set(SOURCE_FILES src/main.cpp src/LoadBalancer.h src/ConfigLoader.h src/LoadBalancer.cpp src/ConfigLoader.cpp src/Worker.cpp src/Worker.h src/WatchDog.cpp src/WatchDog.h src/Acceptor/TcpAcceptor.cpp src/Acceptor/TcpAcceptor.h src/Session.cpp src/Session.h)
 add_executable(shepherd ${SOURCE_FILES})
 
 target_include_directories(shepherd PUBLIC vendor/boost)

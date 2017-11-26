@@ -15,9 +15,10 @@ int main(int argc, char *argv[]) {
 
         auto config = std::make_shared<ConfigLoader>(argv[1]);
         auto watchDog = std::make_shared<WatchDog>(ios, config);
+        auto socketAcceptor = std::make_shared<TcpAcceptor>(ios, config);
         watchDog->spawn();
 
-        LoadBalancer::acceptor acceptor(ios, config, watchDog);
+        LoadBalancer acceptor(ios, socketAcceptor, watchDog);
         acceptor.accept_connections();
 
         ios.run();

@@ -104,6 +104,12 @@
 		<Unit filename="/home/piotr/build/shepherd/src/LoadBalancer.h">
 			<Option target="shepherd"/>
 		</Unit>
+		<Unit filename="/home/piotr/build/shepherd/src/Session.cpp">
+			<Option target="shepherd"/>
+		</Unit>
+		<Unit filename="/home/piotr/build/shepherd/src/Session.h">
+			<Option target="shepherd"/>
+		</Unit>
 		<Unit filename="/home/piotr/build/shepherd/src/WatchDog.cpp">
 			<Option target="shepherd"/>
 		</Unit>
