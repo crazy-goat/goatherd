@@ -17,12 +17,10 @@ namespace crazygoat::shepherd {
                 const std::shared_ptr<ConfigLoader> &config
         );
 
-        bool accept_connections();
-
     private:
-        void handle_accept(const boost::system::error_code &error);
-
         std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor;
+    public:
+        const std::shared_ptr<boost::asio::ip::tcp::acceptor> &getAcceptor() const;
     };
 }
 

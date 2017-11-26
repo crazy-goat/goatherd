@@ -9,6 +9,7 @@
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include "Worker.h"
+#include "ConfigLoader.h"
 
 namespace crazygoat::shepherd {
     class WatchDog {
@@ -23,7 +24,7 @@ namespace crazygoat::shepherd {
         void watch();
 
     public:
-        WatchDog(boost::asio::io_service &ios, std::string command, std::string params, int count, int start_port);
+        WatchDog(boost::asio::io_service &ios, const std::shared_ptr<ConfigLoader> &config);
 
         void spawn();
 

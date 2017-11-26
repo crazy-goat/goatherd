@@ -11,17 +11,10 @@ int main(int argc, char *argv[]) {
     }
 
     boost::asio::io_service ios;
-    boost::asio::io_service::work work(ios);
     try {
 
-        ConfigLoader config(argv[1]);
-        std::shared_ptr<WatchDog> watchDog = std::make_shared<WatchDog>(
-                ios,
-                config.getWorkerCommand(),
-                config.getWorkerParams(),
-                config.getWorkersCount(),
-                config.getStartPort()
-        );
+        auto config = std::make_shared<ConfigLoader>(argv[1]);
+        auto watchDog = std::make_shared<WatchDog>(ios, config);
         watchDog->spawn();
 
         LoadBalancer::acceptor acceptor(ios, config, watchDog);

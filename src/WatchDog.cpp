@@ -10,9 +10,12 @@
 
 namespace crazygoat::shepherd {
 
-    WatchDog::WatchDog(boost::asio::io_service &ios, std::string command, std::string params, int count,
-                       int start_port) : ios(ios), command(command), params(params), count(count),
-                                         start_port(start_port) {
+    WatchDog::WatchDog(boost::asio::io_service &ios, const std::shared_ptr<ConfigLoader> &config)
+            : ios(ios) {
+        this->count = config->getWorkersCount();
+        this->params = config->getWorkerParams();
+        this->command = config->getWorkerCommand();
+        this->start_port = config->getStartPort();
         this->timer = std::make_shared<boost::asio::deadline_timer>(this->ios, boost::posix_time::seconds(1));
         this->requestsCount = 0;
     }

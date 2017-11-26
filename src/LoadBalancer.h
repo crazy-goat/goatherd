@@ -90,14 +90,13 @@ namespace crazygoat::shepherd {
         public:
             acceptor(
                     boost::asio::io_service &io_service,
-                    ConfigLoader &config,
-                    std::shared_ptr<WatchDog> watchDog
+                    const std::shared_ptr<ConfigLoader> &config,
+                    const std::shared_ptr<WatchDog> &watchDog
             ) : io_service_(io_service),
-                config_(config),
                 localhost_address(boost::asio::ip::address_v4::from_string("0.0.0.0")),
-                acceptor_(io_service_, boost::asio::ip::tcp::endpoint(localhost_address, config.getListenPort())),
-                upstream_host_("127.0.0.1"),
-                watchDog(watchDog) {
+                acceptor_(io_service_, boost::asio::ip::tcp::endpoint(localhost_address, config->getListenPort())),
+                upstream_host_("127.0.0.1") {
+                this->watchDog = watchDog;
                 acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
             };
 
@@ -106,14 +105,12 @@ namespace crazygoat::shepherd {
         private:
             void handle_accept(const boost::system::error_code &error);
 
-            ConfigLoader &config_;
             boost::asio::io_service &io_service_;
             boost::asio::ip::address_v4 localhost_address;
             boost::asio::ip::tcp::acceptor acceptor_;
             ptr_type session_;
             std::string upstream_host_;
             std::shared_ptr<WatchDog> watchDog;
-            unsigned short upstream_port_;
         };
     };
 }
