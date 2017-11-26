@@ -33,7 +33,7 @@ namespace crazygoat::shepherd {
             this->workerParams = config.get<std::string>("worker_params");
         }
 
-        int getListenPort() const;
+        unsigned short getListenPort() const;
 
         int getWorkersCount() const;
 

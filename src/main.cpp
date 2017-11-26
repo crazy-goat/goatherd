@@ -10,24 +10,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    boost::asio::io_service ios;
-    boost::asio::io_service::work work(ios);
     try {
 
-        ConfigLoader config(argv[1]);
-        std::shared_ptr<WatchDog> watchDog = std::make_shared<WatchDog>(
-                ios,
-                config.getWorkerCommand(),
-                config.getWorkerParams(),
-                config.getWorkersCount(),
-                config.getStartPort()
+        LoadBalancer loadBalancer(
+                std::make_shared<ConfigLoader>(argv[1])
         );
-        watchDog->spawn();
-
-        LoadBalancer::acceptor acceptor(ios, config, watchDog);
-        acceptor.accept_connections();
-
-        ios.run();
+        loadBalancer.getWatchDog()->spawn();
+        loadBalancer.acceptConnections();
+        loadBalancer.run();
     }
     catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
