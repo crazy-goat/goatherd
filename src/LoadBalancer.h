@@ -24,23 +24,18 @@ namespace crazygoat::shepherd {
 
     class LoadBalancer {
     public:
-        LoadBalancer(
-                boost::asio::io_service &ios,
-                const std::shared_ptr<TcpAcceptor> &acceptor,
-                const std::shared_ptr<WatchDog> &watchDog
-        ) : acceptor_(acceptor->getAcceptor()), ios(ios) {
-            this->watchDog = watchDog;
-        };
-
-        bool accept_connections();
+        explicit LoadBalancer(const std::shared_ptr<ConfigLoader> &config);
+        bool acceptConnections();
+        const std::shared_ptr<WatchDog> &getWatchDog() const;
+        void run();
 
     private:
-        void handle_accept(const boost::system::error_code &error);
-
-        boost::asio::io_service &ios;
-        boost::shared_ptr<Session> session_;
+        void handleAccept(const boost::system::error_code &error);
+        std::shared_ptr<ConfigLoader> config;
+        boost::asio::io_service ios;
+        boost::shared_ptr<Session> session;
         std::shared_ptr<WatchDog> watchDog;
-        std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor_;
+        std::shared_ptr<TcpAcceptor> acceptor;
     };
 }
 

@@ -17,34 +17,29 @@ namespace crazygoat::shepherd {
     public:
 
         Session(boost::asio::io_service &ios)
-        : downstream_socket_(ios),
-        upstream_socket_(ios),
+        : downstreamSocket(ios),
+        upstreamSocket(ios),
         strand_(ios){};
 
-        boost::asio::ip::tcp::socket &downstream_socket() {
-            // Client socket
-            return downstream_socket_;
-        }
+        boost::asio::ip::tcp::socket &getDownstreamSocket();
 
         void start(const std::string &upstream_host, unsigned short upstream_port);
 
-        void handle_upstream_connect(const boost::system::error_code &error);
+        void handleUpstreamConnect(const boost::system::error_code &error);
 
         void setWorker(const std::shared_ptr<Worker> &worker);
 
     private:
-        std::shared_ptr<Worker> worker;
-
         /*
          * Section A: Remote Server --> Proxy --> Client
          * Process data recieved from remote sever then send to client.
         */
 
         // Read from remote server complete, now send data to client
-        void handle_upstream_read(const boost::system::error_code &error, const size_t &bytes_transferred);
+        void handleUpstreamRead(const boost::system::error_code &error, const size_t &bytes_transferred);
 
         // Write to client complete, Async read from remote server
-        void handle_downstream_write(const boost::system::error_code &error);
+        void handleDownstreamWrite(const boost::system::error_code &error);
         // *** End Of Section A ***
 
 
@@ -53,16 +48,18 @@ namespace crazygoat::shepherd {
         */
 
         // Read from client complete, now send data to remote server
-        void handle_downstream_read(const boost::system::error_code &error, const size_t &bytes_transferred);
+        void handleDownstreamRead(const boost::system::error_code &error, const size_t &bytes_transferred);
 
         // Write to remote server complete, Async read from client
-        void handle_upstream_write(const boost::system::error_code &error);
+        void handleUpstreamWrite(const boost::system::error_code &error);
         // *** End Of Section B ***
 
         void close(const boost::system::error_code &error);
 
-        boost::asio::ip::tcp::socket downstream_socket_;
-        boost::asio::ip::tcp::socket upstream_socket_;
+        std::shared_ptr<Worker> worker;
+
+        boost::asio::ip::tcp::socket downstreamSocket;
+        boost::asio::ip::tcp::socket upstreamSocket;
 
         enum {
             max_data_length = 8192

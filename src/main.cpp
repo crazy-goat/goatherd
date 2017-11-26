@@ -10,18 +10,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    boost::asio::io_service ios;
     try {
 
-        auto config = std::make_shared<ConfigLoader>(argv[1]);
-        auto watchDog = std::make_shared<WatchDog>(ios, config);
-        auto socketAcceptor = std::make_shared<TcpAcceptor>(ios, config);
-        watchDog->spawn();
-
-        LoadBalancer acceptor(ios, socketAcceptor, watchDog);
-        acceptor.accept_connections();
-
-        ios.run();
+        LoadBalancer loadBalancer(
+                std::make_shared<ConfigLoader>(argv[1])
+        );
+        loadBalancer.getWatchDog()->spawn();
+        loadBalancer.acceptConnections();
+        loadBalancer.run();
     }
     catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;

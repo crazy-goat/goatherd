@@ -35,7 +35,7 @@ namespace crazygoat::shepherd {
     }
 
     void WatchDog::watch() {
-        for (auto worker:this->workers) {
+        for (auto const &worker:this->workers) {
             if (!worker->isProcessRunning()) {
                 worker->spawn();
             }
