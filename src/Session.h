@@ -20,7 +20,7 @@ namespace crazygoat::shepherd {
 
         boost::asio::generic::stream_protocol::socket &getDownstreamSocket();
 
-        void start(const std::string &upstream_host, unsigned short upstream_port);
+        void start();
 
         void handleUpstreamConnect(const boost::system::error_code &error);
 

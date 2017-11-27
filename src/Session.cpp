@@ -14,18 +14,18 @@ namespace crazygoat::shepherd {
         memset(this->downstream_data, 0, sizeof this->downstream_data);
         memset(this->upstream_data, 0, sizeof downstream_data);
     }
-    
+
     void Session::close(const boost::system::error_code &error) {
         if (downstreamSocket.is_open()) {
             if (error.value() != 2 && error.value() != 125) {
                 std::cerr << "503: " << error.value() << " : " << error.message() << std::endl;
                 std::string errorMessage = "HTTP/1.x 503 Service Unavailable\r\n"
-                        "Content-Type' => 'text/plain\r\n"
-                        "\r\n"
-                        "The server is currently unavailable (because it is overloaded or down for maintenance)";
+                    "Content-Type' => 'text/plain\r\n"
+                    "\r\n"
+                    "The server is currently unavailable (because it is overloaded or down for maintenance)";
 
                 downstreamSocket.write_some(
-                        boost::asio::buffer(errorMessage.c_str(), errorMessage.length())
+                    boost::asio::buffer(errorMessage.c_str(), errorMessage.length())
                 );
             }
 
@@ -42,15 +42,15 @@ namespace crazygoat::shepherd {
     void Session::handleUpstreamWrite(const boost::system::error_code &error) {
         if (!error) {
             downstreamSocket.async_read_some(
-                    boost::asio::buffer(downstream_data, max_data_length),
-                    strand.wrap(
-                            boost::bind(
-                                    &Session::handleDownstreamRead,
-                                    shared_from_this(),
-                                    boost::asio::placeholders::error,
-                                    boost::asio::placeholders::bytes_transferred
-                            )
+                boost::asio::buffer(downstream_data, max_data_length),
+                strand.wrap(
+                    boost::bind(
+                        &Session::handleDownstreamRead,
+                        shared_from_this(),
+                        boost::asio::placeholders::error,
+                        boost::asio::placeholders::bytes_transferred
                     )
+                )
             );
         } else
             close(error);
@@ -61,14 +61,14 @@ namespace crazygoat::shepherd {
                                   const size_t &bytes_transferred) {
         if (!error) {
             async_write(
-                    upstreamSocket,
-                    boost::asio::buffer(downstream_data, bytes_transferred),
-                    strand.wrap(
-                            boost::bind(&Session::handleUpstreamWrite,
-                                        shared_from_this(),
-                                        boost::asio::placeholders::error
-                            )
+                upstreamSocket,
+                boost::asio::buffer(downstream_data, bytes_transferred),
+                strand.wrap(
+                    boost::bind(&Session::handleUpstreamWrite,
+                                shared_from_this(),
+                                boost::asio::placeholders::error
                     )
+                )
             );
         } else
             close(error);
@@ -77,15 +77,15 @@ namespace crazygoat::shepherd {
     void Session::handleDownstreamWrite(const boost::system::error_code &error) {
         if (!error) {
             upstreamSocket.async_read_some(
-                    boost::asio::buffer(upstream_data, max_data_length),
-                    strand.wrap(
-                            boost::bind(
-                                    &Session::handleUpstreamRead,
-                                    shared_from_this(),
-                                    boost::asio::placeholders::error,
-                                    boost::asio::placeholders::bytes_transferred
-                            )
+                boost::asio::buffer(upstream_data, max_data_length),
+                strand.wrap(
+                    boost::bind(
+                        &Session::handleUpstreamRead,
+                        shared_from_this(),
+                        boost::asio::placeholders::error,
+                        boost::asio::placeholders::bytes_transferred
                     )
+                )
             );
         } else
             close(error);
@@ -97,9 +97,9 @@ namespace crazygoat::shepherd {
             async_write(downstreamSocket,
                         boost::asio::buffer(upstream_data, bytes_transferred),
                         boost::bind(
-                                &Session::handleDownstreamWrite,
-                                shared_from_this(),
-                                boost::asio::placeholders::error
+                            &Session::handleDownstreamWrite,
+                            shared_from_this(),
+                            boost::asio::placeholders::error
                         )
             );
         } else
@@ -110,42 +110,36 @@ namespace crazygoat::shepherd {
         if (!error) {
             // Setup async read from remote server (upstream)
             upstreamSocket.async_read_some(
-                    boost::asio::buffer(upstream_data, max_data_length),
-                    boost::bind(
-                            &Session::handleUpstreamRead,
-                            shared_from_this(),
-                            boost::asio::placeholders::error,
-                            boost::asio::placeholders::bytes_transferred
-                    )
+                boost::asio::buffer(upstream_data, max_data_length),
+                boost::bind(
+                    &Session::handleUpstreamRead,
+                    shared_from_this(),
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred
+                )
             );
 
             // Setup async read from client (downstream)
             downstreamSocket.async_read_some(
-                    boost::asio::buffer(downstream_data, max_data_length),
-                    boost::bind(
-                            &Session::handleDownstreamRead,
-                            shared_from_this(),
-                            boost::asio::placeholders::error,
-                            boost::asio::placeholders::bytes_transferred
-                    )
+                boost::asio::buffer(downstream_data, max_data_length),
+                boost::bind(
+                    &Session::handleDownstreamRead,
+                    shared_from_this(),
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred
+                )
             );
         } else
             close(error);
     }
 
-    void Session::start(const std::string &upstream_host, unsigned short upstream_port) {
+    void Session::start() {
         // Attempt connection to remote server (upstream side)
-        upstreamSocket.async_connect(
-                boost::asio::ip::tcp::endpoint(
-                        boost::asio::ip::address::from_string(upstream_host),
-                        upstream_port
-                ),
-                boost::bind(
-                        &Session::handleUpstreamConnect,
-                        shared_from_this(),
-                        boost::asio::placeholders::error
-                )
-        );
+        this->worker->handleUpstreamConnect(upstreamSocket, boost::bind(
+            &Session::handleUpstreamConnect,
+            shared_from_this(),
+            boost::asio::placeholders::error
+        ));
     }
 
     void Session::setWorker(const std::shared_ptr<Worker> &worker) {

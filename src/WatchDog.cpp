@@ -15,15 +15,17 @@ namespace crazygoat::shepherd {
         this->count = config->getWorkersCount();
         this->params = config->getWorkerParams();
         this->command = config->getWorkerCommand();
-        this->start_port = config->getStartPort();
+        this->socket_type = config->getWorkerSocketType();
+        this->start_socket = config->getStartSocket();
         this->timer = std::make_shared<boost::asio::deadline_timer>(this->ios, boost::posix_time::seconds(1));
         this->requestsCount = 0;
     }
 
     void WatchDog::spawn() {
-        int port = this->start_port;
+        int port = this->start_socket;
         for (int i = 0; i < this->count; i++) {
             std::shared_ptr<Worker> tmp = std::make_shared<Worker>(
+                    this->socket_type,
                     this->command,
                     this->params,
                     port + i
