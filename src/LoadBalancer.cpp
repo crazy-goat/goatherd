@@ -26,7 +26,7 @@ namespace crazygoat::shepherd {
     bool LoadBalancer::acceptConnections() {
         try {
             session = boost::shared_ptr<Session>(new Session(ios));
-            acceptor->getAcceptor()->async_accept(
+            acceptor->accept(
                     session->getDownstreamSocket(),
                     boost::bind(
                             &LoadBalancer::handleAccept,

@@ -152,7 +152,7 @@ namespace crazygoat::shepherd {
         this->worker = worker;
     }
 
-    boost::asio::ip::tcp::socket &Session::getDownstreamSocket() {
+    boost::asio::generic::stream_protocol::socket &Session::getDownstreamSocket() {
         return downstreamSocket;
     }
 }

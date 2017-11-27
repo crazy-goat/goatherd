@@ -18,7 +18,7 @@ namespace crazygoat::shepherd {
 
         Session(boost::asio::io_service &ios);
 
-        boost::asio::ip::tcp::socket &getDownstreamSocket();
+        boost::asio::generic::stream_protocol::socket &getDownstreamSocket();
 
         void start(const std::string &upstream_host, unsigned short upstream_port);
 
@@ -55,8 +55,8 @@ namespace crazygoat::shepherd {
 
         std::shared_ptr<Worker> worker;
 
-        boost::asio::ip::tcp::socket downstreamSocket;
-        boost::asio::ip::tcp::socket upstreamSocket;
+        boost::asio::generic::stream_protocol::socket downstreamSocket;
+        boost::asio::generic::stream_protocol::socket upstreamSocket;
 
         enum {
             max_data_length = 8192

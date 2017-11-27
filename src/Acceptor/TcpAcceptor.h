@@ -8,19 +8,20 @@
 #include <boost/asio.hpp>
 #include "../ConfigLoader.h"
 #include "../WatchDog.h"
+#include "Acceptor.h"
 
 namespace crazygoat::shepherd {
-    class TcpAcceptor {
+    class TcpAcceptor : public Acceptor {
     public:
         TcpAcceptor(
                 boost::asio::io_service &io_service,
                 const std::shared_ptr<ConfigLoader> &config
         );
 
+        void accept(boost::asio::generic::stream_protocol::socket &socket, AsyncAcceptor function) override;
+
     private:
         std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor;
-    public:
-        const std::shared_ptr<boost::asio::ip::tcp::acceptor> &getAcceptor() const;
     };
 }
 

@@ -18,7 +18,8 @@ namespace crazygoat::shepherd {
         this->acceptor->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     }
 
-    const std::shared_ptr<boost::asio::ip::tcp::acceptor> &TcpAcceptor::getAcceptor() const {
-        return acceptor;
+    void TcpAcceptor::accept(boost::asio::generic::stream_protocol::socket &socket, AsyncAcceptor function) {
+
+        this->acceptor->async_accept(socket, function);
     }
 }
