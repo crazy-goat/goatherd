@@ -28,4 +28,8 @@ namespace crazygoat::shepherd {
     const std::string &ConfigLoader::getWorkerSocketType() const {
         return workerSocketType;
     }
+
+    const std::string &ConfigLoader::getSocketPath() const {
+        return socketPath;
+    }
 }

@@ -13,7 +13,7 @@ namespace crazygoat::shepherd {
 
     class Worker {
     protected:
-        std::string command, params, socket_type;
+        std::string command, params, socket_type, socket_path;
         unsigned short port;
         std::shared_ptr<boost::process::child> process;
 
@@ -27,7 +27,7 @@ namespace crazygoat::shepherd {
 
         unsigned short getPort() const;
 
-        Worker(std::string socket_type, std::string command, std::string params, unsigned short port);
+        Worker(std::string socket_type, std::string command, std::string params, unsigned short port, std::string socket_path);
 
         void spawn();
 

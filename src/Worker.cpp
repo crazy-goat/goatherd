@@ -21,12 +21,13 @@ namespace crazygoat::shepherd {
         this->isWorking = false;
     }
 
-    Worker::Worker(std::string socket_type, std::string command, std::string params, unsigned short port) :
+    Worker::Worker(std::string socket_type, std::string command, std::string params, unsigned short port, std::string socket_path) :
             socket_type(socket_type),
             command(command),
             params(params),
             port(port),
-            isWorking(false){}
+            isWorking(false),
+            socket_path(socket_path){}
 
     std::vector<std::string> Worker::replaceSocket(std::string subject, const std::string &search,
                                                    const std::string &replace) {
@@ -53,7 +54,7 @@ namespace crazygoat::shepherd {
     }
 
     void Worker::handleUpstreamConnect(boost::asio::generic::stream_protocol::socket &socket, UpstreamConnect function) {
-        if (this->socket_type.compare("tcp") == 0) {
+        if (this->socket_type == "tcp") {
             socket.async_connect(
                 boost::asio::ip::tcp::endpoint(
                     boost::asio::ip::address::from_string("127.0.0.1"),
@@ -64,7 +65,7 @@ namespace crazygoat::shepherd {
         } else {
             socket.async_connect(
                 boost::asio::local::stream_protocol::endpoint(
-
+                    this->socket_path+"."+std::to_string(this->getPort())
                 ),
                 function
             );

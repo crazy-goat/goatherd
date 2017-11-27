@@ -16,18 +16,17 @@ namespace crazygoat::shepherd {
         int workersCount;
         int startSocket;
         std::string workerSocketType;
-    public:
-        const std::string &getWorkerSocketType() const;
-
-    protected:
         std::string workerCommand;
         std::string workerParams;
+        std::string socketPath;
+    public:
+        const std::string &getSocketPath() const;
+
     public:
         const std::string &getWorkerCommand() const;
-
         const std::string &getWorkerParams() const;
+        const std::string &getWorkerSocketType() const;
 
-    public:
         ConfigLoader(const std::string &configFile) {
             boost::property_tree::ptree config;
             boost::property_tree::json_parser::read_json(configFile, config);
@@ -37,6 +36,7 @@ namespace crazygoat::shepherd {
             this->workerCommand = config.get<std::string>("worker_command");
             this->workerParams = config.get<std::string>("worker_params");
             this->workerSocketType = config.get<std::string>("worker_socket_type");
+            this->socketPath = config.get_optional<std::string>("worker_socket_path").get_value_or("");
         }
 
         unsigned short getListenPort() const;

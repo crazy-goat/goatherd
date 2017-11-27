@@ -17,6 +17,7 @@ namespace crazygoat::shepherd {
         this->command = config->getWorkerCommand();
         this->socket_type = config->getWorkerSocketType();
         this->start_socket = config->getStartSocket();
+        this->socket_path = config->getSocketPath();
         this->timer = std::make_shared<boost::asio::deadline_timer>(this->ios, boost::posix_time::seconds(1));
         this->requestsCount = 0;
     }
@@ -28,7 +29,8 @@ namespace crazygoat::shepherd {
                     this->socket_type,
                     this->command,
                     this->params,
-                    port + i
+                    port + i,
+                    this->socket_path
             );
             tmp->spawn();
             this->workers.push_back(std::move(tmp));
