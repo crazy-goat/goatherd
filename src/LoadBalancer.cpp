@@ -10,10 +10,7 @@ namespace crazygoat::shepherd {
         if (!error) {
             auto worker = this->watchDog->getFreeWorker();
             session->setWorker(worker);
-            session->start(
-                    "127.0.0.1",
-                    worker->getPort()
-            );
+            session->start();
 
             if (!acceptConnections()) {
                 std::cerr << "Failure during call to accept." << std::endl;
@@ -26,7 +23,7 @@ namespace crazygoat::shepherd {
     bool LoadBalancer::acceptConnections() {
         try {
             session = boost::shared_ptr<Session>(new Session(ios));
-            acceptor->getAcceptor()->async_accept(
+            acceptor->accept(
                     session->getDownstreamSocket(),
                     boost::bind(
                             &LoadBalancer::handleAccept,

@@ -1,0 +1,9 @@
+{
+  "listenPort": 1234,
+  "worker_socket_type": "uds",
+  "worker_command" : "php",
+  "worker_params": "app-uds.php /tmp/shepard.sock.%%socket%%",
+  "worker_count": 5,
+  "worker_start_socket": 0,
+  "worker_socket_path": "/tmp/shepard.sock"
+}

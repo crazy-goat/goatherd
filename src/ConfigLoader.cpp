@@ -13,8 +13,8 @@ namespace crazygoat::shepherd {
         return workersCount;
     }
 
-    int ConfigLoader::getStartPort() const {
-        return startPort;
+    int ConfigLoader::getStartSocket() const {
+        return startSocket;
     }
 
     const std::string &ConfigLoader::getWorkerCommand() const {
@@ -23,5 +23,13 @@ namespace crazygoat::shepherd {
 
     const std::string &ConfigLoader::getWorkerParams() const {
         return workerParams;
+    }
+
+    const std::string &ConfigLoader::getWorkerSocketType() const {
+        return workerSocketType;
+    }
+
+    const std::string &ConfigLoader::getSocketPath() const {
+        return socketPath;
     }
 }

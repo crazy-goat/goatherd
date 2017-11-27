@@ -15,8 +15,8 @@ namespace crazygoat::shepherd {
     class WatchDog {
     protected:
         boost::asio::io_service &ios;
-        std::string command, params;
-        int count, start_port;
+        std::string command, params, socket_type, socket_path;
+        int count, start_socket;
         unsigned int requestsCount;
         std::vector<std::shared_ptr<Worker> > workers;
         std::shared_ptr<boost::asio::deadline_timer> timer;
