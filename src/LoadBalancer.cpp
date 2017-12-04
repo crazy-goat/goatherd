@@ -3,6 +3,7 @@
 //
 
 #include "LoadBalancer.h"
+#include "Acceptor/TcpAcceptor.h"
 
 namespace crazygoat::shepherd {
 

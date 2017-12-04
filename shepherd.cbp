@@ -101,10 +101,16 @@
 		<Unit filename="/home/piotr/build/shepherd/src/Acceptor/UdsAcceptor.h">
 			<Option target="shepherd"/>
 		</Unit>
-		<Unit filename="/home/piotr/build/shepherd/src/ConfigLoader.cpp">
+		<Unit filename="/home/piotr/build/shepherd/src/Config/ConfigLoader.cpp">
 			<Option target="shepherd"/>
 		</Unit>
-		<Unit filename="/home/piotr/build/shepherd/src/ConfigLoader.h">
+		<Unit filename="/home/piotr/build/shepherd/src/Config/ConfigLoader.h">
+			<Option target="shepherd"/>
+		</Unit>
+		<Unit filename="/home/piotr/build/shepherd/src/Config/WorkerConfig.cpp">
+			<Option target="shepherd"/>
+		</Unit>
+		<Unit filename="/home/piotr/build/shepherd/src/Config/WorkerConfig.h">
 			<Option target="shepherd"/>
 		</Unit>
 		<Unit filename="/home/piotr/build/shepherd/src/LoadBalancer.cpp">

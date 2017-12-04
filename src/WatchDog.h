@@ -9,7 +9,7 @@
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include "Worker.h"
-#include "ConfigLoader.h"
+#include "Config/ConfigLoader.h"
 
 namespace crazygoat::shepherd {
     class WatchDog {

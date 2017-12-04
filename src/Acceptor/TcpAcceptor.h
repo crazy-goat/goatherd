@@ -6,7 +6,7 @@
 #define SHEPHERD_TCPACCEPTOR_H
 
 #include <boost/asio.hpp>
-#include "../ConfigLoader.h"
+#include "../Config/ConfigLoader.h"
 #include "../WatchDog.h"
 #include "Acceptor.h"
 

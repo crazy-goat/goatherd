@@ -15,10 +15,10 @@
 #include <boost/asio.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
-#include "ConfigLoader.h"
+#include "Config/ConfigLoader.h"
 #include "WatchDog.h"
-#include "Acceptor/TcpAcceptor.h"
 #include "Session.h"
+#include "Acceptor/Acceptor.h"
 
 namespace crazygoat::shepherd {
 
@@ -35,7 +35,7 @@ namespace crazygoat::shepherd {
         boost::asio::io_service ios;
         boost::shared_ptr<Session> session;
         std::shared_ptr<WatchDog> watchDog;
-        std::shared_ptr<TcpAcceptor> acceptor;
+        std::shared_ptr<Acceptor> acceptor;
     };
 }
 

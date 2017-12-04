@@ -7,7 +7,7 @@
 
 #include <boost/asio/local/stream_protocol.hpp>
 #include "Acceptor.h"
-#include "../ConfigLoader.h"
+#include "../Config/ConfigLoader.h"
 
 namespace crazygoat::shepherd {
     class UdsAcceptor : public Acceptor {
