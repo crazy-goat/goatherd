@@ -5,40 +5,50 @@
 #ifndef SHEPHERD_WORKER_H
 #define SHEPHERD_WORKER_H
 
-#include <iostream>
-#include <boost/process.hpp>
+#include "Config/WorkerConfig.h"
 #include <boost/asio/generic/stream_protocol.hpp>
+#include <boost/process.hpp>
+#include <iostream>
 
 namespace crazygoat::shepherd {
 
-    class Worker {
-    protected:
-        std::string command, params, socket_type, socket_path;
-        unsigned short port;
-        std::shared_ptr<boost::process::child> process;
+class Worker {
+protected:
+  unsigned short port;
+  std::shared_ptr<boost::process::child> process;
+  std::shared_ptr<WorkerConfig> workerConfig;
 
-        std::vector<std::string>
-        replaceSocket(std::string subject, const std::string &search, const std::string &replace);
+  std::vector<std::string> replaceSocket(std::string subject,
+                                         const std::string &search,
+                                         const std::string &replace);
 
-        bool isWorking;
+  bool isWorking;
 
-    public:
-        typedef boost::function<void(const boost::system::error_code &error)> UpstreamConnect;
+public:
+  typedef boost::function<void(const boost::system::error_code &error)>
+      UpstreamConnect;
 
-        unsigned short getPort() const;
+  unsigned short getPort() const;
 
-        Worker(std::string socket_type, std::string command, std::string params, unsigned short port, std::string socket_path);
+  explicit Worker(std::shared_ptr<WorkerConfig> workerConfig,
+                  unsigned short workerNumber) {
+    this->workerConfig = workerConfig;
+    this->port = workerConfig->getStartPort() + workerNumber;
+    this->isWorking = false;
+  };
 
-        void spawn();
+  void spawn();
 
-        bool isProcessRunning() const;
+  bool isProcessRunning() const;
 
-        bool isIsWorking() const;
+  bool isIsWorking() const;
 
-        void setIsWorking(bool isWorking);
+  void setIsWorking(bool isWorking);
 
-        void handleUpstreamConnect(boost::asio::generic::stream_protocol::socket &socket, UpstreamConnect function);
-    };
+  void
+  handleUpstreamConnect(boost::asio::generic::stream_protocol::socket &socket,
+                        UpstreamConnect function);
+};
 }
 
-#endif //SHEPHERD_WORKER_H
+#endif // SHEPHERD_WORKER_H

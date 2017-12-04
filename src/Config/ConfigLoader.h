@@ -5,46 +5,53 @@
 #ifndef PPPM_CONFIGLOADER_H
 #define PPPM_CONFIGLOADER_H
 
-#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include "WorkerConfig.h"
 
 namespace crazygoat::shepherd {
 
-    class ConfigLoader {
-    protected:
-        int listenPort;
-        int workersCount;
-        int startSocket;
-        std::string workerSocketType;
-        std::string workerCommand;
-        std::string workerParams;
-        std::string socketPath;
-    public:
-        const std::string &getSocketPath() const;
+class ConfigLoader {
+protected:
+  unsigned short listenPort;
+  int workersCount;
+  std::string serverSocketType;
+  std::string serverSocketAddress;
+  std::string serverSocketPath;
+  std::shared_ptr<WorkerConfig> workerConfig;
 
-    public:
-        const std::string &getWorkerCommand() const;
-        const std::string &getWorkerParams() const;
-        const std::string &getWorkerSocketType() const;
+public:
+  explicit ConfigLoader(const std::string &configFile) {
+    boost::property_tree::ptree config;
+    boost::property_tree::json_parser::read_json(configFile, config);
+    SocketParser parser(config.get<std::string>("listenSocket"));
 
-        ConfigLoader(const std::string &configFile) {
-            boost::property_tree::ptree config;
-            boost::property_tree::json_parser::read_json(configFile, config);
-            this->listenPort = config.get<int>("listenPort");
-            this->workersCount = config.get<int>("worker_count");
-            this->startSocket = config.get<int>("worker_start_socket");
-            this->workerCommand = config.get<std::string>("worker_command");
-            this->workerParams = config.get<std::string>("worker_params");
-            this->workerSocketType = config.get<std::string>("worker_socket_type");
-            this->socketPath = config.get_optional<std::string>("worker_socket_path").get_value_or("");
-        }
+    this->listenPort = parser.getPort();
+    this->serverSocketType = parser.getType();
+    this->serverSocketAddress = parser.getAddress();
+    this->serverSocketPath = parser.getPath();
 
-        unsigned short getListenPort() const;
+    this->workerConfig =
+        std::make_shared<WorkerConfig>(config.get_child("worker"));
 
-        int getWorkersCount() const;
+    this->workersCount = config.get<int>("workerCount");
+  }
 
-        int getStartSocket() const;
-    };
+  unsigned short getListenPort() const { return listenPort; }
 
+  int getWorkersCount() const { return workersCount; }
+
+  std::shared_ptr<WorkerConfig> getWorkerConfig() {
+    return workerConfig;
+  }
+
+  const std::string &getServerSocketType() const { return serverSocketType; }
+
+  const std::string &getServerSocketAddress() const {
+    return serverSocketAddress;
+  }
+
+  const std::string &getServerSocketPath() const { return serverSocketPath; }
+};
 }
-#endif //PPPM_CONFIGLOADER_H
+#endif // PPPM_CONFIGLOADER_H

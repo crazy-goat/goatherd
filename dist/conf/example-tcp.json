@@ -2,9 +2,8 @@
   "listenSocket": "tcp://0.0.0.0:1234",
   "workerCount" : 5,
   "worker" : {
-    "command" : "php",
-    "params": "app-tcp.php %%socket%%",
-    "workerSocket" : "tcp://0.0.0.0:%%number%%",
-    "socketStartNumber": 6000
+    "command" : "app-tcp.php",
+    "params": "%%socket%%",
+    "workerSocket" : "tcp://127.0.0.1:6000"
   }
 }
