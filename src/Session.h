@@ -5,68 +5,65 @@
 #ifndef SHEPHERD_SESSION_H
 #define SHEPHERD_SESSION_H
 
+#include "Worker.h"
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
-#include "Worker.h"
-
 
 namespace crazygoat::shepherd {
-    class Session: public boost::enable_shared_from_this<Session> {
-    public:
+class Session : public boost::enable_shared_from_this<Session> {
+public:
+  Session(boost::asio::io_service &ios);
 
-        Session(boost::asio::io_service &ios);
+  boost::asio::generic::stream_protocol::socket &getDownstreamSocket();
 
-        boost::asio::generic::stream_protocol::socket &getDownstreamSocket();
+  void start();
 
-        void start();
+  void handleUpstreamConnect(const boost::system::error_code &error);
 
-        void handleUpstreamConnect(const boost::system::error_code &error);
+  void setWorker(const std::shared_future<std::shared_ptr<Worker>> &worker);
 
-        void setWorker(const std::shared_ptr<Worker> &worker);
+private:
+  /*
+   * Section A: Remote Server --> Proxy --> Client
+   * Process data recieved from remote sever then send to client.
+  */
 
-    private:
-        /*
-         * Section A: Remote Server --> Proxy --> Client
-         * Process data recieved from remote sever then send to client.
-        */
+  // Read from remote server complete, now send data to client
+  void handleUpstreamRead(const boost::system::error_code &error,
+                          const size_t &bytes_transferred);
 
-        // Read from remote server complete, now send data to client
-        void handleUpstreamRead(const boost::system::error_code &error, const size_t &bytes_transferred);
+  // Write to client complete, Async read from remote server
+  void handleDownstreamWrite(const boost::system::error_code &error);
+  // *** End Of Section A ***
 
-        // Write to client complete, Async read from remote server
-        void handleDownstreamWrite(const boost::system::error_code &error);
-        // *** End Of Section A ***
+  /* Section B: Client --> Proxy --> Remove Server
+   * Process data recieved from client then write to remove server.
+  */
 
+  // Read from client complete, now send data to remote server
+  void handleDownstreamRead(const boost::system::error_code &error,
+                            const size_t &bytes_transferred);
 
-        /* Section B: Client --> Proxy --> Remove Server
-         * Process data recieved from client then write to remove server.
-        */
+  // Write to remote server complete, Async read from client
+  void handleUpstreamWrite(const boost::system::error_code &error);
+  // *** End Of Section B ***
 
-        // Read from client complete, now send data to remote server
-        void handleDownstreamRead(const boost::system::error_code &error, const size_t &bytes_transferred);
+  void close(const boost::system::error_code &error);
 
-        // Write to remote server complete, Async read from client
-        void handleUpstreamWrite(const boost::system::error_code &error);
-        // *** End Of Section B ***
+  std::shared_future<std::shared_ptr<Worker>> worker;
 
-        void close(const boost::system::error_code &error);
+  boost::asio::generic::stream_protocol::socket downstreamSocket;
+  boost::asio::generic::stream_protocol::socket upstreamSocket;
 
-        std::shared_ptr<Worker> worker;
+  enum { max_data_length = 8192 }; // 8KB
+  unsigned char downstream_data[max_data_length];
+  unsigned char upstream_data[max_data_length];
 
-        boost::asio::generic::stream_protocol::socket downstreamSocket;
-        boost::asio::generic::stream_protocol::socket upstreamSocket;
-
-        enum {
-            max_data_length = 8192
-        }; //8KB
-        unsigned char downstream_data[max_data_length];
-        unsigned char upstream_data[max_data_length];
-
-        /// Strand to ensure the connection's handlers are not called concurrently.
-        boost::asio::io_service::strand strand;
-    };
+  /// Strand to ensure the connection's handlers are not called concurrently.
+  boost::asio::io_service::strand strand;
+};
 }
 
-#endif //SHEPHERD_SESSION_H
+#endif // SHEPHERD_SESSION_H

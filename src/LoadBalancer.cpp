@@ -10,8 +10,7 @@ namespace crazygoat::shepherd {
 
 void LoadBalancer::handleAccept(const boost::system::error_code &error) {
   if (!error) {
-    auto worker = this->watchDog->getFreeWorker();
-    session->setWorker(worker);
+    session->setWorker(this->watchDog->getFreeWorker());
     session->start();
 
     if (!acceptConnections()) {

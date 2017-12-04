@@ -38,11 +38,8 @@ void WatchDog::watch() {
   this->timer->async_wait(boost::bind(&WatchDog::watch, this));
 }
 
-std::shared_ptr<Worker> WatchDog::getFreeWorker() {
-  std::future<std::shared_ptr<Worker>> fWorker =
-      std::async(&WatchDog::workerIterator, this);
-
-  return fWorker.get();
+std::shared_future<std::shared_ptr<Worker>> WatchDog::getFreeWorker() {
+  return std::async(&WatchDog::workerIterator, this).share();
 }
 
 std::shared_ptr<Worker> WatchDog::workerIterator() {

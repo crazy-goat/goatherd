@@ -28,7 +28,7 @@ public:
 
   void spawn();
 
-  std::shared_ptr<Worker> getFreeWorker();
+  std::shared_future<std::shared_ptr<Worker>> getFreeWorker();
 };
 }
 
