@@ -13,7 +13,7 @@ namespace crazygoat::shepherd {
     UdsAcceptor::UdsAcceptor(boost::asio::io_service &io_service, const std::shared_ptr<ConfigLoader> &config) :
         acceptor(std::make_shared<boost::asio::local::stream_protocol::acceptor>(
             io_service,
-            boost::asio::local::stream_protocol::endpoint("/tmp/foobar")
+            boost::asio::local::stream_protocol::endpoint(config->getServerSocketPath())
         ))
     {
 

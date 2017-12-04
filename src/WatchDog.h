@@ -5,32 +5,31 @@
 #ifndef SHEPHERD_WATCHDOG_H
 #define SHEPHERD_WATCHDOG_H
 
+#include "Config/ConfigLoader.h"
+#include "Worker.h"
+#include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
-#include <boost/asio/deadline_timer.hpp>
-#include "Worker.h"
-#include "ConfigLoader.h"
 
 namespace crazygoat::shepherd {
-    class WatchDog {
-    protected:
-        boost::asio::io_service &ios;
-        std::string command, params, socket_type, socket_path;
-        int count, start_socket;
-        unsigned int requestsCount;
-        std::vector<std::shared_ptr<Worker> > workers;
-        std::shared_ptr<boost::asio::deadline_timer> timer;
-        std::shared_ptr<Worker> workerIterator();
-        void watch();
+class WatchDog {
+protected:
+  boost::asio::io_service &ios;
+  unsigned int requestsCount;
+  std::vector<std::shared_ptr<Worker>> workers;
+  std::shared_ptr<boost::asio::deadline_timer> timer;
+  std::shared_ptr<Worker> workerIterator();
+  std::shared_ptr<ConfigLoader> config;
+  void watch();
 
-    public:
-        WatchDog(boost::asio::io_service &ios, const std::shared_ptr<ConfigLoader> &config);
+public:
+  WatchDog(boost::asio::io_service &ios,
+           const std::shared_ptr<ConfigLoader> &config);
 
-        void spawn();
+  void spawn();
 
-        std::shared_ptr<Worker> getFreeWorker();
-    };
+  std::shared_ptr<Worker> getFreeWorker();
+};
 }
 
-
-#endif //SHEPHERD_WATCHDOG_H
+#endif // SHEPHERD_WATCHDOG_H

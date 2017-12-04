@@ -10,7 +10,7 @@ namespace crazygoat::shepherd {
             acceptor(std::make_shared<boost::asio::ip::tcp::acceptor>(
                     io_service,
                     boost::asio::ip::tcp::endpoint(
-                            boost::asio::ip::address_v4::from_string("0.0.0.0"),
+                            boost::asio::ip::address_v4::from_string(config->getServerSocketAddress()),
                             config->getListenPort()
                     )
             ))

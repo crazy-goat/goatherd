@@ -4,7 +4,7 @@
 	<Project>
 		<Option title="shepherd"/>
 		<Option makefile_is_custom="1"/>
-		<Option compiler="gcc"/>
+		<Option compiler="clang"/>
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
@@ -42,17 +42,18 @@
 				<Option working_dir="/home/piotr/build/shepherd"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
-				<Option compiler="gcc"/>
+				<Option compiler="clang"/>
 				<Compiler>
 					<Add directory="/home/piotr/build/shepherd/vendor/boost"/>
-					<Add directory="/usr/include/c++/6"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
-					<Add directory="/usr/include/c++/6/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/x86_64-linux-gnu/c++/6.3.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0/backward"/>
+					<Add directory="/usr/include/clang/4.0.1/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/make -j4 -f &quot;/home/piotr/build/shepherd/Makefile&quot;  VERBOSE=1 shepherd"/>
@@ -66,17 +67,18 @@
 				<Option working_dir="/home/piotr/build/shepherd"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
-				<Option compiler="gcc"/>
+				<Option compiler="clang"/>
 				<Compiler>
 					<Add directory="/home/piotr/build/shepherd/vendor/boost"/>
-					<Add directory="/usr/include/c++/6"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
-					<Add directory="/usr/include/c++/6/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/x86_64-linux-gnu/c++/6.3.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0/backward"/>
+					<Add directory="/usr/include/clang/4.0.1/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/make -j4 -f &quot;/home/piotr/build/shepherd/Makefile&quot;  VERBOSE=1 shepherd/fast"/>
@@ -101,10 +103,13 @@
 		<Unit filename="/home/piotr/build/shepherd/src/Acceptor/UdsAcceptor.h">
 			<Option target="shepherd"/>
 		</Unit>
-		<Unit filename="/home/piotr/build/shepherd/src/ConfigLoader.cpp">
+		<Unit filename="/home/piotr/build/shepherd/src/Config/ConfigLoader.h">
 			<Option target="shepherd"/>
 		</Unit>
-		<Unit filename="/home/piotr/build/shepherd/src/ConfigLoader.h">
+		<Unit filename="/home/piotr/build/shepherd/src/Config/SocketParser.h">
+			<Option target="shepherd"/>
+		</Unit>
+		<Unit filename="/home/piotr/build/shepherd/src/Config/WorkerConfig.h">
 			<Option target="shepherd"/>
 		</Unit>
 		<Unit filename="/home/piotr/build/shepherd/src/LoadBalancer.cpp">

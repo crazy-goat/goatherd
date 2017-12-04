@@ -5,24 +5,20 @@
 using namespace crazygoat::shepherd;
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        std::cerr << "usage: shepherd <config_file.json>" << std::endl;
-        return 1;
-    }
+  if (argc != 2) {
+    std::cerr << "usage: shepherd <config_file.json>" << std::endl;
+    return 1;
+  }
 
-    try {
+  try {
+    LoadBalancer loadBalancer(std::make_shared<ConfigLoader>(argv[1]));
+    loadBalancer.getWatchDog()->spawn();
+    loadBalancer.acceptConnections();
+    loadBalancer.run();
+  } catch (std::exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
+  }
 
-        LoadBalancer loadBalancer(
-                std::make_shared<ConfigLoader>(argv[1])
-        );
-        loadBalancer.getWatchDog()->spawn();
-        loadBalancer.acceptConnections();
-        loadBalancer.run();
-    }
-    catch (std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
-    }
-
-    return 0;
+  return 0;
 }
