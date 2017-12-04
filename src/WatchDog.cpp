@@ -42,10 +42,6 @@ std::shared_ptr<Worker> WatchDog::getFreeWorker() {
   std::future<std::shared_ptr<Worker>> fWorker =
       std::async(&WatchDog::workerIterator, this);
 
-  while (fWorker.wait_for(std::chrono::microseconds(5)) !=
-         std::future_status::ready) {
-  }
-
   return fWorker.get();
 }
 
