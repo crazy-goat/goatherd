@@ -27,7 +27,7 @@ public:
            const std::shared_ptr<ConfigLoader> &config);
 
   void spawn();
-
+  void restartWorkers();
   std::shared_future<std::shared_ptr<Worker>> getFreeWorker();
 };
 }

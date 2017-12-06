@@ -5,9 +5,9 @@
 #ifndef PPPM_CONFIGLOADER_H
 #define PPPM_CONFIGLOADER_H
 
+#include "WorkerConfig.h"
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include "WorkerConfig.h"
 
 namespace crazygoat::shepherd {
 
@@ -18,6 +18,7 @@ protected:
   std::string serverSocketType;
   std::string serverSocketAddress;
   std::string serverSocketPath;
+  std::string watchDir;
   std::shared_ptr<WorkerConfig> workerConfig;
 
 public:
@@ -31,6 +32,8 @@ public:
     this->serverSocketAddress = parser.getAddress();
     this->serverSocketPath = parser.getPath();
 
+    this->watchDir =
+        config.get_optional<std::string>("watchDir").get_value_or("");
     this->workerConfig =
         std::make_shared<WorkerConfig>(config.get_child("worker"));
 
@@ -41,9 +44,7 @@ public:
 
   int getWorkersCount() const { return workersCount; }
 
-  std::shared_ptr<WorkerConfig> getWorkerConfig() {
-    return workerConfig;
-  }
+  std::shared_ptr<WorkerConfig> getWorkerConfig() { return workerConfig; }
 
   const std::string &getServerSocketType() const { return serverSocketType; }
 
@@ -52,6 +53,7 @@ public:
   }
 
   const std::string &getServerSocketPath() const { return serverSocketPath; }
+  const std::string &getWatchDir() const { return watchDir; }
 };
 }
 #endif // PPPM_CONFIGLOADER_H

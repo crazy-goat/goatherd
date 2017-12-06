@@ -38,6 +38,7 @@ bool LoadBalancer::acceptConnections() {
 LoadBalancer::LoadBalancer(const std::shared_ptr<ConfigLoader> &config)
     : config(config) {
   this->watchDog = std::make_shared<WatchDog>(this->ios, this->config);
+  this->monitor = std::make_shared<DirectoryMonitor>(this->ios, this->config, this->watchDog);
 
   if (config->getServerSocketType() == SOCKET_TYPE_TCP) {
 

@@ -52,4 +52,11 @@ std::shared_ptr<Worker> WatchDog::workerIterator() {
     }
   } while (true);
 }
+void WatchDog::restartWorkers() {
+  for(auto worker:this->workers) {
+    if (!worker->isIsWorking()) {
+      worker->setNeedRestart();
+    }
+  }
+}
 }

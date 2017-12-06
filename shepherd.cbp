@@ -45,6 +45,7 @@
 				<Option compiler="clang"/>
 				<Compiler>
 					<Add directory="/home/piotr/build/shepherd/vendor/boost"/>
+					<Add directory="/home/piotr/build/shepherd/vendor/dir_monitor/include"/>
 					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0"/>
 					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/x86_64-linux-gnu/c++/6.3.0"/>
 					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0/backward"/>
@@ -70,6 +71,7 @@
 				<Option compiler="clang"/>
 				<Compiler>
 					<Add directory="/home/piotr/build/shepherd/vendor/boost"/>
+					<Add directory="/home/piotr/build/shepherd/vendor/dir_monitor/include"/>
 					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0"/>
 					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/x86_64-linux-gnu/c++/6.3.0"/>
 					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/6.3.0/../../../../include/c++/6.3.0/backward"/>
@@ -110,6 +112,9 @@
 			<Option target="shepherd"/>
 		</Unit>
 		<Unit filename="/home/piotr/build/shepherd/src/Config/WorkerConfig.h">
+			<Option target="shepherd"/>
+		</Unit>
+		<Unit filename="/home/piotr/build/shepherd/src/DirectoryMonitor.h">
 			<Option target="shepherd"/>
 		</Unit>
 		<Unit filename="/home/piotr/build/shepherd/src/LoadBalancer.cpp">

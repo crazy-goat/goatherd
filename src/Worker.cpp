@@ -30,7 +30,14 @@ unsigned short Worker::getPort() const { return port; }
 
 bool Worker::isIsWorking() const { return isWorking; }
 
-void Worker::setIsWorking(bool isWorking) { Worker::isWorking = isWorking; }
+void Worker::setIsWorking(bool isWorking) {
+  if (!isWorking && this->needRestart) {
+    Worker::isWorking = true;
+    this->restartWorker();
+  } else {
+    Worker::isWorking = isWorking;
+  }
+}
 
 void Worker::handleUpstreamConnect(
     boost::asio::generic::stream_protocol::socket &socket,
@@ -47,6 +54,21 @@ void Worker::handleUpstreamConnect(
                              this->workerConfig->getSocketPath() + "." +
                              std::to_string(this->getPort())),
                          function);
+  }
+}
+void Worker::restartWorker() {
+  if (this->process->valid()) {
+    this->process->terminate();
+    this->spawn();
+  }
+  this->needRestart = false;
+  this->isWorking = false;
+}
+void Worker::setNeedRestart() {
+  if (!this->isIsWorking()) {
+    this->restartWorker();
+  } else {
+    this->needRestart = true;
   }
 }
 }

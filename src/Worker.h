@@ -22,7 +22,9 @@ protected:
                                          const std::string &search,
                                          const std::string &replace);
 
-  bool isWorking;
+  bool isWorking, needRestart;
+
+  void restartWorker();
 
 public:
   typedef boost::function<void(const boost::system::error_code &error)>
@@ -35,6 +37,7 @@ public:
     this->workerConfig = workerConfig;
     this->port = workerConfig->getStartPort() + workerNumber;
     this->isWorking = false;
+    this->needRestart = false;
   };
 
   void spawn();
@@ -44,7 +47,7 @@ public:
   bool isIsWorking() const;
 
   void setIsWorking(bool isWorking);
-
+  void setNeedRestart();
   void
   handleUpstreamConnect(boost::asio::generic::stream_protocol::socket &socket,
                         UpstreamConnect function);
