@@ -1,0 +1,10 @@
+{
+  "listenSocket": "uds:///tmp/shepard-server.sock",
+  "workerCount": 5,
+  "worker": {
+    "command": "app-uds.php",
+    "params": "%%socket%%",
+    "workerSocket": "uds:///tmp/shepard.sock.%%number%%",
+    "socketStartNumber": 0
+  }
+}

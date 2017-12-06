@@ -1,50 +1,52 @@
 #include "Worker.h"
+#include <boost/asio/ip/address.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/local/stream_protocol.hpp>
 
 namespace crazygoat::shepherd {
 
-    void Worker::spawn() {
-        std::cout << "Spawning process on port:" << this->port << std::endl;
+void Worker::spawn() {
+  std::cout << "Spawning process on port:" << this->port << std::endl;
 
-        this->process = std::make_shared<boost::process::child>(
-                boost::process::search_path(this->command),
-                this->replacePort(
-                        this->params, "%%port%%",
-                        std::to_string(
-                                this->port
-                        )
-                ), //set the input
-                boost::process::std_in.close()
-        );
-        this->isWorking = false;
-    }
+  this->process = std::make_shared<boost::process::child>(
+      this->workerConfig->getCommand(),
+      this->replaceSocket(this->workerConfig->getParams(), "%%socket%%",
+                          std::to_string(this->port)), // set the input
+      boost::process::std_in.close());
+  this->isWorking = false;
+}
+std::vector<std::string> Worker::replaceSocket(std::string subject,
+                                               const std::string &search,
+                                               const std::string &replace) {
+  boost::algorithm::replace_all(subject, search, replace);
+  std::vector<std::string> returnParams;
+  boost::split(returnParams, subject, boost::is_any_of("\t "));
+  return returnParams;
+}
 
-    Worker::Worker(std::string command, std::string params, unsigned short port) :
-            command(command),
-            params(params),
-            port(port),
-            isWorking(false){}
+bool Worker::isProcessRunning() const { return this->process->running(); }
 
-    std::vector<std::string> Worker::replacePort(std::string subject, const std::string &search,
-                                                 const std::string &replace) {
-        boost::algorithm::replace_all(subject, search, replace);
-        std::vector<std::string> returnParams;
-        boost::split(returnParams, subject, boost::is_any_of("\t "));
-        return returnParams;
-    }
+unsigned short Worker::getPort() const { return port; }
 
-    bool Worker::isProcessRunning() const {
-        return this->process->running();
-    }
+bool Worker::isIsWorking() const { return isWorking; }
 
-    unsigned short Worker::getPort() const {
-        return port;
-    }
+void Worker::setIsWorking(bool isWorking) { Worker::isWorking = isWorking; }
 
-    bool Worker::isIsWorking() const {
-        return isWorking;
-    }
+void Worker::handleUpstreamConnect(
+    boost::asio::generic::stream_protocol::socket &socket,
+    UpstreamConnect function) {
 
-    void Worker::setIsWorking(bool isWorking) {
-        Worker::isWorking = isWorking;
-    }
+  if (this->workerConfig->getSocketType() == SOCKET_TYPE_TCP) {
+    socket.async_connect(boost::asio::ip::tcp::endpoint(
+                             boost::asio::ip::address::from_string(
+                                 this->workerConfig->getSocketAddress()),
+                             this->getPort()),
+                         function);
+  } else {
+    socket.async_connect(boost::asio::local::stream_protocol::endpoint(
+                             this->workerConfig->getSocketPath() + "." +
+                             std::to_string(this->getPort())),
+                         function);
+  }
+}
 }
