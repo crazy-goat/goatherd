@@ -1,3 +1,6 @@
 [submodule "vendor/boost"]
 	path = vendor/boost
 	url = https://github.com/boostorg/boost.git
+[submodule "vendor/dir_monitor"]
+	path = vendor/dir_monitor
+	url = https://github.com/berkus/dir_monitor.git

@@ -1,5 +1,6 @@
 #!/bin/bash
 git submodule update --init vendor/boost/
+git submodule update --init vendor/dir_monitor
 cd vendor/boost
 git submodule update --init tools/boostdep
 git submodule update --init tools/build
