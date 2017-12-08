@@ -6,7 +6,7 @@ use React\EventLoop\Factory;
 use React\Http\Response;
 use React\Http\Server;
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $loop = Factory::create();
 

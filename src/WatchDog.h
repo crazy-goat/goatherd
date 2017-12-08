@@ -5,11 +5,15 @@
 #ifndef SHEPHERD_WATCHDOG_H
 #define SHEPHERD_WATCHDOG_H
 
+#define BOOST_THREAD_PROVIDES_FUTURE
+#define BOOST_THREAD_PROVIDES_FUTURE_CONTINUATION
+
 #include "Config/ConfigLoader.h"
 #include "Worker.h"
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
+#include <boost/thread/future.hpp>
 
 namespace crazygoat::shepherd {
 class WatchDog {
@@ -21,6 +25,7 @@ protected:
   std::shared_ptr<Worker> workerIterator();
   std::shared_ptr<ConfigLoader> config;
   void watch();
+  unsigned int workerCount;
 
 public:
   WatchDog(boost::asio::io_service &ios,
@@ -28,7 +33,7 @@ public:
 
   void spawn();
   void restartWorkers();
-  std::shared_future<std::shared_ptr<Worker>> getFreeWorker();
+  boost::future<std::shared_ptr<Worker>> hasFreeWorker();
 };
 }
 

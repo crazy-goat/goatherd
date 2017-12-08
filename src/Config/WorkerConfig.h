@@ -15,7 +15,7 @@ private:
   unsigned short startPort;
 
 public:
-  explicit WorkerConfig(boost::property_tree::ptree workerConfig){
+  explicit WorkerConfig(boost::property_tree::ptree workerConfig) {
     SocketParser parser(workerConfig.get<std::string>("workerSocket"));
 
     this->command = workerConfig.get<std::string>("command");

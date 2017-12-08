@@ -35,7 +35,8 @@ private:
     auto address_port = socketString.substr(6);
     auto pos = address_port.find(':');
     if (pos == std::string::npos) {
-      throw "Invalid tcp address, should be address:port (example 127.0.0.0:0) ";
+      throw "Invalid tcp address, should be address:port (example "
+            "127.0.0.0:0) ";
     }
     this->address = address_port.substr(0, pos);
     this->port = (unsigned short)std::stoi(address_port.substr(pos + 1));

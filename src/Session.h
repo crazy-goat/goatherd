@@ -14,7 +14,7 @@
 namespace crazygoat::shepherd {
 class Session : public boost::enable_shared_from_this<Session> {
 public:
-  Session(boost::asio::io_service &ios);
+  explicit Session(boost::asio::io_service &ios);
 
   boost::asio::generic::stream_protocol::socket &getDownstreamSocket();
 
@@ -22,7 +22,7 @@ public:
 
   void handleUpstreamConnect(const boost::system::error_code &error);
 
-  void setWorker(const std::shared_future<std::shared_ptr<Worker>> &worker);
+  void setWorker(const std::shared_ptr<Worker> &worker);
 
 private:
   /*
@@ -52,7 +52,7 @@ private:
 
   void close(const boost::system::error_code &error);
 
-  std::shared_future<std::shared_ptr<Worker>> worker;
+  std::shared_ptr<Worker> worker;
 
   boost::asio::generic::stream_protocol::socket downstreamSocket;
   boost::asio::generic::stream_protocol::socket upstreamSocket;

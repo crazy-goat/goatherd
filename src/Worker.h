@@ -18,11 +18,12 @@ protected:
   std::shared_ptr<boost::process::child> process;
   std::shared_ptr<WorkerConfig> workerConfig;
 
+protected:
   std::vector<std::string> replaceSocket(std::string subject,
                                          const std::string &search,
                                          const std::string &replace);
 
-  bool isWorking, needRestart;
+  bool working, needRestart;
 
   void restartWorker();
 
@@ -33,10 +34,10 @@ public:
   unsigned short getPort() const;
 
   explicit Worker(std::shared_ptr<WorkerConfig> workerConfig,
-                  unsigned short workerNumber) {
+                  unsigned short workerNumber, boost::asio::io_service &ios) {
     this->workerConfig = workerConfig;
     this->port = workerConfig->getStartPort() + workerNumber;
-    this->isWorking = false;
+    this->working = false;
     this->needRestart = false;
   };
 
@@ -44,7 +45,7 @@ public:
 
   bool isProcessRunning() const;
 
-  bool isIsWorking() const;
+  bool isWorking() const;
 
   void setIsWorking(bool isWorking);
   void setNeedRestart();

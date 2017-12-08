@@ -5,19 +5,15 @@
 #ifndef PPPM_LOADBALANCER_H
 #define PPPM_LOADBALANCER_H
 
+#include "Acceptor/Acceptor.h"
+#include "DirectoryMonitor.h"
+#include "Session.h"
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
-
-#include "Acceptor/Acceptor.h"
-#include "Session.h"
-#include "DirectoryMonitor.h"
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/thread.hpp>
 
 namespace crazygoat::shepherd {
 
@@ -30,7 +26,6 @@ public:
 
 private:
   void handleAccept(const boost::system::error_code &error);
-  std::shared_ptr<ConfigLoader> config;
   boost::asio::io_service ios;
   boost::shared_ptr<Session> session;
   std::shared_ptr<WatchDog> watchDog;

@@ -10,7 +10,7 @@ namespace crazygoat::shepherd {
 
 WatchDog::WatchDog(boost::asio::io_service &ios,
                    const std::shared_ptr<ConfigLoader> &config)
-    : ios(ios), config(config) {
+    : ios(ios), config(config), workerCount(config->getWorkersCount()) {
   this->timer = std::make_shared<boost::asio::deadline_timer>(
       this->ios, boost::posix_time::seconds(1));
   this->requestsCount = 0;
@@ -19,7 +19,7 @@ WatchDog::WatchDog(boost::asio::io_service &ios,
 void WatchDog::spawn() {
   for (int i = 0; i < this->config->getWorkersCount(); i++) {
     std::shared_ptr<Worker> tmp =
-        std::make_shared<Worker>(this->config->getWorkerConfig(), i);
+        std::make_shared<Worker>(this->config->getWorkerConfig(), i, ios);
     tmp->spawn();
     this->workers.push_back(std::move(tmp));
   }
@@ -38,25 +38,21 @@ void WatchDog::watch() {
   this->timer->async_wait(boost::bind(&WatchDog::watch, this));
 }
 
-std::shared_future<std::shared_ptr<Worker>> WatchDog::getFreeWorker() {
-  return std::async(&WatchDog::workerIterator, this).share();
-}
-
-std::shared_ptr<Worker> WatchDog::workerIterator() {
-  do {
-    auto worker = this->workers[(++this->requestsCount) %
-                                this->config->getWorkersCount()];
-
-    if (!worker->isIsWorking()) {
-      return worker;
-    }
-  } while (true);
-}
 void WatchDog::restartWorkers() {
-  for(auto worker:this->workers) {
-    if (!worker->isIsWorking()) {
-      worker->setNeedRestart();
-    }
+  for (const auto &worker : this->workers) {
+    worker->setNeedRestart();
   }
+}
+boost::future<std::shared_ptr<Worker>> WatchDog::hasFreeWorker() {
+  return boost::async(boost::launch::async,
+                      [this]() -> std::shared_ptr<Worker> {
+                        while (1) {
+                          auto worker = workers[requestsCount++ % workerCount];
+                          if (!worker->isWorking()) {
+                            worker->setIsWorking(true);
+                            return worker;
+                          }
+                        };
+                      });
 }
 }

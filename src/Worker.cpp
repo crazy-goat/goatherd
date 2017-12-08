@@ -13,7 +13,7 @@ void Worker::spawn() {
       this->replaceSocket(this->workerConfig->getParams(), "%%socket%%",
                           std::to_string(this->port)), // set the input
       boost::process::std_in.close());
-  this->isWorking = false;
+  this->working = false;
 }
 std::vector<std::string> Worker::replaceSocket(std::string subject,
                                                const std::string &search,
@@ -28,14 +28,14 @@ bool Worker::isProcessRunning() const { return this->process->running(); }
 
 unsigned short Worker::getPort() const { return port; }
 
-bool Worker::isIsWorking() const { return isWorking; }
+bool Worker::isWorking() const { return working; }
 
 void Worker::setIsWorking(bool isWorking) {
   if (!isWorking && this->needRestart) {
-    Worker::isWorking = true;
+    Worker::working = true;
     this->restartWorker();
   } else {
-    Worker::isWorking = isWorking;
+    Worker::working = isWorking;
   }
 }
 
@@ -62,10 +62,10 @@ void Worker::restartWorker() {
     this->spawn();
   }
   this->needRestart = false;
-  this->isWorking = false;
+  this->working = false;
 }
 void Worker::setNeedRestart() {
-  if (!this->isIsWorking()) {
+  if (!this->isWorking()) {
     this->restartWorker();
   } else {
     this->needRestart = true;

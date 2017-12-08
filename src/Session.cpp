@@ -7,11 +7,8 @@
 namespace crazygoat::shepherd {
 Session::Session(boost::asio::io_service &ios)
     : downstreamSocket(ios), upstreamSocket(ios), strand(ios) {
-  // clear cppcheck errors
   this->downstream_data[0] = 0;
   this->upstream_data[0] = 0;
-  memset(this->downstream_data, 0, sizeof this->downstream_data);
-  memset(this->upstream_data, 0, sizeof downstream_data);
 }
 
 void Session::close(const boost::system::error_code &error) {
@@ -33,10 +30,9 @@ void Session::close(const boost::system::error_code &error) {
   }
 
   if (upstreamSocket.is_open()) {
+    this->worker->setIsWorking(false);
     upstreamSocket.close();
   }
-
-  this->worker.get()->setIsWorking(false);
 }
 
 void Session::handleUpstreamWrite(const boost::system::error_code &error) {
@@ -113,7 +109,7 @@ void Session::start() {
                   boost::asio::placeholders::error));
 }
 
-void Session::setWorker(const std::shared_future<std::shared_ptr<Worker>> &worker) {
+void Session::setWorker(const std::shared_ptr<Worker> &worker) {
   this->worker = worker;
 }
 
