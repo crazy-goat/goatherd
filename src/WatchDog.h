@@ -14,6 +14,7 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <boost/thread/future.hpp>
+#include <queue>
 
 namespace crazygoat::goatherd {
 class WatchDog {
@@ -22,18 +23,19 @@ protected:
   unsigned int requestsCount;
   std::vector<std::shared_ptr<Worker>> workers;
   std::shared_ptr<boost::asio::deadline_timer> timer;
-  std::shared_ptr<Worker> workerIterator();
+
   std::shared_ptr<ConfigLoader> config;
   void watch();
   unsigned int workerCount;
 
 public:
+  std::queue<std::shared_ptr<Worker>> freeWorkers;
   WatchDog(boost::asio::io_service &ios,
            const std::shared_ptr<ConfigLoader> &config);
 
   void spawn();
   void restartWorkers();
-  boost::future<std::shared_ptr<Worker>> hasFreeWorker();
+  std::shared_ptr<Worker> hasFreeWorker();
 };
 }
 

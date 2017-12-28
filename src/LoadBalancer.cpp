@@ -9,16 +9,11 @@ namespace crazygoat::goatherd {
 
 void LoadBalancer::handleAccept(const boost::system::error_code &error) {
   if (!error) {
-    this->watchDog->hasFreeWorker().then(
-        [this](boost::future<std::shared_ptr<Worker>> worker) {
-          session->setWorker(worker.get());
-          session->start();
+        session->start();
 
-          if (!acceptConnections()) {
-            std::cerr << "Failure during call to accept." << std::endl;
-          }
-        });
-
+        if (!acceptConnections()) {
+          std::cerr << "Failure during call to accept." << std::endl;
+        }
   } else {
     std::cerr << "Very bad error: " << error.message() << std::endl;
   }
@@ -26,7 +21,10 @@ void LoadBalancer::handleAccept(const boost::system::error_code &error) {
 
 bool LoadBalancer::acceptConnections() {
   try {
-    session = boost::shared_ptr<Session>(new Session(ios));
+    while (this->watchDog->freeWorkers.empty()) {
+      this->ios.poll();
+    };
+    session = boost::shared_ptr<Session>(new Session(this));
     acceptor->accept(session->getDownstreamSocket(),
                      boost::bind(&LoadBalancer::handleAccept, this,
                                  boost::asio::placeholders::error));
@@ -56,4 +54,8 @@ const std::shared_ptr<WatchDog> &LoadBalancer::getWatchDog() const {
 }
 
 void LoadBalancer::run() { this->ios.run(); }
+
+void LoadBalancer::addFreeWorker(std::shared_ptr<Worker> worker) {
+  this->watchDog->freeWorkers.push(worker);
+}
 }

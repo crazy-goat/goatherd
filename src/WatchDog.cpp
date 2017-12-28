@@ -21,7 +21,8 @@ void WatchDog::spawn() {
     std::shared_ptr<Worker> tmp =
         std::make_shared<Worker>(this->config->getWorkerConfig(), i, ios);
     tmp->spawn();
-    this->workers.push_back(std::move(tmp));
+    this->freeWorkers.push(tmp);
+    this->workers.push_back(tmp);
   }
   this->timer->async_wait(boost::bind(&WatchDog::watch, this));
 }
@@ -43,16 +44,9 @@ void WatchDog::restartWorkers() {
     worker->setNeedRestart();
   }
 }
-boost::future<std::shared_ptr<Worker>> WatchDog::hasFreeWorker() {
-  return boost::async(boost::launch::async,
-                      [this]() -> std::shared_ptr<Worker> {
-                        while (1) {
-                          auto worker = workers[requestsCount++ % workerCount];
-                          if (!worker->isWorking()) {
-                            worker->setIsWorking(true);
-                            return worker;
-                          }
-                        };
-                      });
+std::shared_ptr<Worker> WatchDog::hasFreeWorker() {
+                        auto tmp = freeWorkers.front();
+                        freeWorkers.pop();
+                        return tmp;
 }
 }

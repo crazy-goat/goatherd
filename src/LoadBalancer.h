@@ -24,9 +24,12 @@ public:
   const std::shared_ptr<WatchDog> &getWatchDog() const;
   void run();
 
+  void addFreeWorker(std::shared_ptr<Worker> worker);
+  boost::asio::io_service ios;
 private:
   void handleAccept(const boost::system::error_code &error);
-  boost::asio::io_service ios;
+
+private:
   boost::shared_ptr<Session> session;
   std::shared_ptr<WatchDog> watchDog;
   std::shared_ptr<Acceptor> acceptor;
