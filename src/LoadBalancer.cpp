@@ -21,8 +21,8 @@ void LoadBalancer::handleAccept(const boost::system::error_code &error) {
 
 bool LoadBalancer::acceptConnections() {
   try {
-    while (this->watchDog->freeWorkers.empty()) {
-      this->ios.poll();
+    while (this->freeWorkers.empty()) {
+      this->ios.poll_one();
     };
     session = boost::shared_ptr<Session>(new Session(this));
     acceptor->accept(session->getDownstreamSocket(),
@@ -37,7 +37,16 @@ bool LoadBalancer::acceptConnections() {
 }
 
 LoadBalancer::LoadBalancer(const std::shared_ptr<ConfigLoader> &config) {
-  this->watchDog = std::make_shared<WatchDog>(this->ios, config);
+
+  for (short unsigned int i = 0; i < config->getWorkersCount(); i++) {
+    auto tmp = std::make_unique<Worker>(config->getWorkerConfig(), i, ios);
+
+    tmp->spawn();
+    this->freeWorkers.emplace(tmp.get());
+    this->workers.push_back(std::move(tmp));
+  }
+
+  this->watchDog = std::make_shared<WatchDog>(this->ios, config, &this->workers);
   this->monitor =
       std::make_shared<DirectoryMonitor>(this->ios, config, this->watchDog);
 
@@ -49,13 +58,16 @@ LoadBalancer::LoadBalancer(const std::shared_ptr<ConfigLoader> &config) {
   }
 }
 
-const std::shared_ptr<WatchDog> &LoadBalancer::getWatchDog() const {
-  return watchDog;
-}
-
 void LoadBalancer::run() { this->ios.run(); }
 
-void LoadBalancer::addFreeWorker(std::shared_ptr<Worker> worker) {
-  this->watchDog->freeWorkers.push(worker);
+void LoadBalancer::addFreeWorker(Worker *worker) {
+  worker->setIsWorking(false);
+  this->freeWorkers.push(worker);
+}
+Worker *LoadBalancer::getFreeWorker() {
+  auto worker = freeWorkers.front();
+  freeWorkers.pop();
+  worker->setIsWorking(true);
+  return worker;
 }
 }

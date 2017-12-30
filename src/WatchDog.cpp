@@ -9,26 +9,18 @@
 namespace crazygoat::goatherd {
 
 WatchDog::WatchDog(boost::asio::io_service &ios,
-                   const std::shared_ptr<ConfigLoader> &config)
+                   const std::shared_ptr<ConfigLoader> &config,
+                   std::vector<std::unique_ptr<Worker>> *workers)
     : ios(ios), config(config), workerCount(config->getWorkersCount()) {
+  this->workers = workers;
   this->timer = std::make_shared<boost::asio::deadline_timer>(
       this->ios, boost::posix_time::seconds(1));
-  this->requestsCount = 0;
-}
-
-void WatchDog::spawn() {
-  for (int i = 0; i < this->config->getWorkersCount(); i++) {
-    std::shared_ptr<Worker> tmp =
-        std::make_shared<Worker>(this->config->getWorkerConfig(), i, ios);
-    tmp->spawn();
-    this->freeWorkers.push(tmp);
-    this->workers.push_back(tmp);
-  }
   this->timer->async_wait(boost::bind(&WatchDog::watch, this));
+
 }
 
 void WatchDog::watch() {
-  for (auto const &worker : this->workers) {
+  for (auto const &worker : *this->workers) {
     if (!worker->isProcessRunning()) {
       worker->spawn();
     }
@@ -40,13 +32,9 @@ void WatchDog::watch() {
 }
 
 void WatchDog::restartWorkers() {
-  for (const auto &worker : this->workers) {
+  for (auto const &worker : *this->workers) {
     worker->setNeedRestart();
   }
 }
-std::shared_ptr<Worker> WatchDog::hasFreeWorker() {
-                        auto tmp = freeWorkers.front();
-                        freeWorkers.pop();
-                        return tmp;
-}
+
 }

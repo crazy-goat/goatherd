@@ -21,15 +21,17 @@ class LoadBalancer {
 public:
   explicit LoadBalancer(const std::shared_ptr<ConfigLoader> &config);
   bool acceptConnections();
-  const std::shared_ptr<WatchDog> &getWatchDog() const;
   void run();
 
-  void addFreeWorker(std::shared_ptr<Worker> worker);
+  void addFreeWorker(Worker *worker);
+  Worker *getFreeWorker();
   boost::asio::io_service ios;
 private:
   void handleAccept(const boost::system::error_code &error);
 
-private:
+  std::queue<Worker*> freeWorkers;
+  std::vector<std::unique_ptr<Worker>> workers;
+
   boost::shared_ptr<Session> session;
   std::shared_ptr<WatchDog> watchDog;
   std::shared_ptr<Acceptor> acceptor;

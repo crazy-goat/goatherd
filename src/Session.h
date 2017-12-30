@@ -26,8 +26,6 @@ public:
 
   void handleUpstreamConnect(const boost::system::error_code &error);
 
-  void setWorker(const std::shared_ptr<Worker> &worker);
-
 private:
   /*
    * Section A: Remote Server --> Proxy --> Client
@@ -56,7 +54,7 @@ private:
 
   void close(const boost::system::error_code &error);
 
-  std::shared_ptr<Worker> worker;
+  Worker *worker;
   LoadBalancer *lb;
 
   boost::asio::generic::stream_protocol::socket downstreamSocket;
