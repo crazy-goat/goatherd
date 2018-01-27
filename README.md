@@ -1,2 +1,2 @@
 # shepherd
-PHP laod balancer and proces manager
+TCP load balancer and proces manager
