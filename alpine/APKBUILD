@@ -1,0 +1,49 @@
+# Contributor:
+# Maintainer:
+pkgname=shepherd
+pkgver=0.2.1    
+pkgrel=0
+pkgdesc="PHP laod balancer and proces manager"
+url="https://github.com/crazy-goat/shepherd"
+arch="all"
+license="MIT"
+depends=""
+makedepends="linux-headers cmake python-dev wget"
+install=""
+subpackages=""
+source="${pkgname}-${pkgver}.tar.gz::https://github.com/crazy-goat/$pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/${pkgname}-${pkgver}"
+
+prepare() {
+    default_prepare
+	cd "$builddir"
+    cd vendor
+    rm -rf boost dir_monitor
+    git clone https://github.com/berkus/dir_monitor.git
+    wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
+    tar -xf boost_1_65_1.tar.gz
+    rm boost_1_65_1.tar.gz
+    mv boost_1_65_1 boost
+    cd boost
+    ./bootstrap.sh || return 1
+    ./b2 headers || return 1
+    ./b2 release link=static -j4 || return 1
+}
+
+build() {
+	cd "$builddir"
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr .
+    make -j4
+}
+
+check() {
+	cd "$builddir"
+#    ./shepherd || return 1
+}
+
+package() {
+	cd "$builddir"
+    make DESTDIR="$pkgdir" install || return 1
+}
+
+sha512sums="33fc29c2fbe5e82e57ab9cd18134caf387fe56db84f1c050bd7b466ec3cb8eca1b9171ab78611959487e0dd4a4af0df2a9e8bc75afba8808a844b783b07cfb2d  shepherd-0.2.1.tar.gz"
