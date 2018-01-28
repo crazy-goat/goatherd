@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(goatherd)
 SET(MAJOR_VERSION "0")
-SET(MINOR_VERSION "2")
-SET(PATCH_VERSION "3")
+SET(MINOR_VERSION "3")
+SET(PATCH_VERSION "0")
 
 option(USE_INTERNAL_BOOST "User internal Boost" OFF)
 
