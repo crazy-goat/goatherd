@@ -58,7 +58,7 @@ SET(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_NAME "goatherd")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Piotr Hałas")
 SET(CPACK_PACKAGE_VENDOR "crazy-goat.com")
-SET(CPACK_PACKAGE_DESCRIPTION "TCP load balancer and proces manager")
+SET(CPACK_PACKAGE_DESCRIPTION "TCP load balancer and proces manager ")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Goatherd is free, open source, languange independend, \
 fast and lightweight load balancer with build-in process manager for any TCP/IP serivces. \
 It's written using modern c++17 and well-known libraries like Boost.Asio for networking \
