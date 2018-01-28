@@ -1,13 +1,51 @@
 cmake_minimum_required(VERSION 3.5)
+option(internaBoost "User internal Boost" OFF)
+
 project(shepherd)
-find_package(Threads)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
-set(SOURCE_FILES src/main.cpp src/LoadBalancer.h src/Config/ConfigLoader.h src/LoadBalancer.cpp src/Worker.cpp src/Worker.h src/WatchDog.cpp src/WatchDog.h src/Acceptor/TcpAcceptor.cpp src/Acceptor/TcpAcceptor.h src/Session.cpp src/Session.h src/Acceptor/Acceptor.h src/Acceptor/UdsAcceptor.cpp src/Acceptor/UdsAcceptor.h src/Config/WorkerConfig.h src/Config/SocketParser.h src/DirectoryMonitor.h)
+set(SOURCE_FILES src/main.cpp
+        src/LoadBalancer.cpp
+        src/Worker.cpp
+        src/WatchDog.cpp
+        src/Acceptor/TcpAcceptor.cpp
+        src/Session.cpp
+        src/Acceptor/UdsAcceptor.cpp)
+
+find_package(Threads)
 add_executable(shepherd ${SOURCE_FILES})
+target_include_directories(shepherd PUBLIC vendor/dir_monitor/include)
 
-target_include_directories(shepherd PUBLIC vendor/boost vendor/dir_monitor/include)
-find_library(BOOST_SYSTEM libboost_system.a HINTS vendor/boost/stage/lib)
-find_library(BOOST_FILESYSTEM libboost_filesystem.a HINTS vendor/boost/stage/lib)
-find_library(BOOST_THREAD libboost_thread.a HINTS vendor/boost/stage/lib)
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/dir_monitor)
+    execute_process(COMMAND git clone https://github.com/berkus/dir_monitor.git
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
+endif()
 
-target_link_libraries(shepherd PUBLIC ${BOOST_SYSTEM} ${BOOST_THREAD} ${BOOST_FILESYSTEM} ${CMAKE_THREAD_LIBS_INIT})
+if (${internaBoost})
+    message("Downloading Boost")
+    execute_process(COMMAND ./initboost.sh
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
+    target_include_directories(shepherd PUBLIC vendor/boost)
+
+    find_library(BOOST_SYSTEM libboost_system.a
+            HINTS vendor/boost/stage/lib)
+    find_library(BOOST_FILESYSTEM libboost_filesystem.a
+            HINTS vendor/boost/stage/lib)
+    find_library(BOOST_THREAD libboost_thread.a
+            HINTS vendor/boost/stage/lib)
+
+    target_link_libraries(shepherd PUBLIC
+            ${BOOST_SYSTEM} ${BOOST_THREAD}
+            ${BOOST_FILESYSTEM}
+            ${CMAKE_THREAD_LIBS_INIT})
+
+else()
+    find_package(Boost 1.64 COMPONENTS process filesystem system asio)
+    target_link_libraries(shepherd PUBLIC
+            Boost::filesystem
+            Boost::prcess
+            Boost::asio
+            Boost::system)
+endif()
+
+install(TARGETS shepherd DESTINATION bin)
