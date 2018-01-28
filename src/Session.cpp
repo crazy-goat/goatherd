@@ -3,12 +3,12 @@
 //
 
 #include "Session.h"
+#include "LoadBalancer.h"
 
 namespace crazygoat::goatherd {
-Session::Session(boost::asio::io_service &ios)
-    : downstreamSocket(ios), upstreamSocket(ios), strand(ios) {
-  this->downstream_data[0] = 0;
-  this->upstream_data[0] = 0;
+Session::Session(LoadBalancer *lb)
+    : downstreamSocket(lb->ios), upstreamSocket(lb->ios), strand(lb->ios), lb(lb) {
+  this->worker = this->lb->getFreeWorker();
 }
 
 void Session::close(const boost::system::error_code &error) {
@@ -30,7 +30,6 @@ void Session::close(const boost::system::error_code &error) {
   }
 
   if (upstreamSocket.is_open()) {
-    this->worker->setIsWorking(false);
     upstreamSocket.close();
   }
 }
@@ -103,17 +102,16 @@ void Session::handleUpstreamConnect(const boost::system::error_code &error) {
 
 void Session::start() {
   // Attempt connection to remote server (upstream side)
-  this->worker.get()->handleUpstreamConnect(
+  this->worker->handleUpstreamConnect(
       upstreamSocket,
       boost::bind(&Session::handleUpstreamConnect, shared_from_this(),
                   boost::asio::placeholders::error));
 }
 
-void Session::setWorker(const std::shared_ptr<Worker> &worker) {
-  this->worker = worker;
-}
-
 boost::asio::generic::stream_protocol::socket &Session::getDownstreamSocket() {
   return downstreamSocket;
+}
+Session::~Session() {
+  this->lb->addFreeWorker(this->worker);
 }
 }

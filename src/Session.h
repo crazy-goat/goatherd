@@ -12,17 +12,19 @@
 #include <boost/shared_ptr.hpp>
 
 namespace crazygoat::goatherd {
+
+class LoadBalancer;
+
 class Session : public boost::enable_shared_from_this<Session> {
 public:
-  explicit Session(boost::asio::io_service &ios);
+  explicit Session(LoadBalancer *lb);
+  ~Session();
 
   boost::asio::generic::stream_protocol::socket &getDownstreamSocket();
 
   void start();
 
   void handleUpstreamConnect(const boost::system::error_code &error);
-
-  void setWorker(const std::shared_ptr<Worker> &worker);
 
 private:
   /*
@@ -52,7 +54,8 @@ private:
 
   void close(const boost::system::error_code &error);
 
-  std::shared_ptr<Worker> worker;
+  Worker *worker;
+  LoadBalancer *lb;
 
   boost::asio::generic::stream_protocol::socket downstreamSocket;
   boost::asio::generic::stream_protocol::socket upstreamSocket;

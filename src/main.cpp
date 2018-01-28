@@ -12,7 +12,6 @@ int main(int argc, char *argv[]) {
 
   try {
     LoadBalancer loadBalancer(std::make_shared<ConfigLoader>(argv[1]));
-    loadBalancer.getWatchDog()->spawn();
     loadBalancer.acceptConnections();
     loadBalancer.run();
   } catch (std::exception &e) {
