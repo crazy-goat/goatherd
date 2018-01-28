@@ -15,6 +15,7 @@ set(SOURCE_FILES src/main.cpp
 find_package(Threads)
 add_executable(goatherd ${SOURCE_FILES})
 target_include_directories(goatherd PUBLIC vendor/dir_monitor/include)
+set_target_properties(goatherd PROPERTIES LINK_FLAGS "-static" )
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/dir_monitor)
     execute_process(COMMAND git clone https://github.com/berkus/dir_monitor.git
