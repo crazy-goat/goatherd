@@ -1,7 +1,7 @@
 # Contributor:
 # Maintainer:
 pkgname=goatherd
-pkgver=0.2.1    
+pkgver=0.3.0
 pkgrel=0
 pkgdesc="PHP laod balancer and proces manager"
 url="https://github.com/crazy-goat/goatherd"
@@ -30,4 +30,4 @@ package() {
     make DESTDIR="$pkgdir" install || return 1
 }
 
-sha512sums="33fc29c2fbe5e82e57ab9cd18134caf387fe56db84f1c050bd7b466ec3cb8eca1b9171ab78611959487e0dd4a4af0df2a9e8bc75afba8808a844b783b07cfb2d  goatherd-0.2.1.tar.gz"
+sha512sums="f933a5af19878e91a6d85a7fb71bdea8463b8d775ed3ee8dc5b615ce43bbd13fb0fe866a64a5d6079350fe7cd37849ea00251bf19de6935f2f0008575141e0ef  goatherd-0.3.0.tar.gz"
