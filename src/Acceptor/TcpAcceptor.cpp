@@ -4,7 +4,7 @@
 
 #include "TcpAcceptor.h"
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 TcpAcceptor::TcpAcceptor(boost::asio::io_service &io_service,
                          const std::shared_ptr<ConfigLoader> &config)

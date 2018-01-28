@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <iostream>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 class LoadBalancer {
 public:

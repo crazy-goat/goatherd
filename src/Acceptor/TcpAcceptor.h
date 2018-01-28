@@ -2,15 +2,15 @@
 // Created by piotr on 25.11.17.
 //
 
-#ifndef SHEPHERD_TCPACCEPTOR_H
-#define SHEPHERD_TCPACCEPTOR_H
+#ifndef GOATHERD_TCPACCEPTOR_H
+#define GOATHERD_TCPACCEPTOR_H
 
 #include "../Config/ConfigLoader.h"
 #include "../WatchDog.h"
 #include "Acceptor.h"
 #include <boost/asio.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 class TcpAcceptor : public Acceptor {
 public:
   TcpAcceptor(boost::asio::io_service &io_service,
@@ -24,4 +24,4 @@ private:
 };
 }
 
-#endif // SHEPHERD_TCPACCEPTOR_H
+#endif // GOATHERD_TCPACCEPTOR_H

@@ -2,8 +2,8 @@
 // Created by piotr on 27.11.17.
 //
 
-#ifndef SHEPHERD_ACCEPTOR_H
-#define SHEPHERD_ACCEPTOR_H
+#ifndef GOATHERD_ACCEPTOR_H
+#define GOATHERD_ACCEPTOR_H
 
 #include <boost/asio/generic/stream_protocol.hpp>
 #include <boost/function.hpp>
@@ -16,4 +16,4 @@ public:
                       AsyncAcceptor function) = 0;
 };
 
-#endif // SHEPHERD_ACCEPTOR_H
+#endif // GOATHERD_ACCEPTOR_H

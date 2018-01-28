@@ -2,12 +2,12 @@
 // Created by piotr on 04.12.17.
 //
 
-#ifndef SHEPHERD_SOCKETPARSER_H
-#define SHEPHERD_SOCKETPARSER_H
+#ifndef GOATHERD_SOCKETPARSER_H
+#define GOATHERD_SOCKETPARSER_H
 
 #include <iostream>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 const std::string SOCKET_TYPE_TCP = "tcp";
 const std::string SOCKET_TYPE_UDS = "uds";
@@ -62,4 +62,4 @@ public:
 };
 }
 
-#endif // SHEPHERD_SOCKETPARSER_H
+#endif // GOATHERD_SOCKETPARSER_H

@@ -1,10 +1,10 @@
 # Contributor:
 # Maintainer:
-pkgname=shepherd
+pkgname=goatherd
 pkgver=0.2.1    
 pkgrel=0
 pkgdesc="PHP laod balancer and proces manager"
-url="https://github.com/crazy-goat/shepherd"
+url="https://github.com/crazy-goat/goatherd"
 arch="all"
 license="MIT"
 depends=""
@@ -22,7 +22,7 @@ build() {
 
 check() {
 	cd "$builddir"
-#    ./shepherd || return 1
+#    ./goatherd || return 1
 }
 
 package() {
@@ -30,4 +30,4 @@ package() {
     make DESTDIR="$pkgdir" install || return 1
 }
 
-sha512sums="33fc29c2fbe5e82e57ab9cd18134caf387fe56db84f1c050bd7b466ec3cb8eca1b9171ab78611959487e0dd4a4af0df2a9e8bc75afba8808a844b783b07cfb2d  shepherd-0.2.1.tar.gz"
+sha512sums="33fc29c2fbe5e82e57ab9cd18134caf387fe56db84f1c050bd7b466ec3cb8eca1b9171ab78611959487e0dd4a4af0df2a9e8bc75afba8808a844b783b07cfb2d  goatherd-0.2.1.tar.gz"

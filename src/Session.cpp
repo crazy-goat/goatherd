@@ -4,7 +4,7 @@
 
 #include "Session.h"
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 Session::Session(boost::asio::io_service &ios)
     : downstreamSocket(ios), upstreamSocket(ios), strand(ios) {
   this->downstream_data[0] = 0;

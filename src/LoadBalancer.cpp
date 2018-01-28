@@ -5,7 +5,7 @@
 #include "Acceptor/TcpAcceptor.h"
 #include "Acceptor/UdsAcceptor.h"
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 void LoadBalancer::handleAccept(const boost::system::error_code &error) {
   if (!error) {

@@ -4,7 +4,7 @@
 
 #include "UdsAcceptor.h"
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 void UdsAcceptor::accept(boost::asio::generic::stream_protocol::socket &socket,
                          Acceptor::AsyncAcceptor function) {

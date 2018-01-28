@@ -2,15 +2,15 @@
 // Created by piotr on 11.11.17.
 //
 
-#ifndef SHEPHERD_WORKER_H
-#define SHEPHERD_WORKER_H
+#ifndef GOATHERD_WORKER_H
+#define GOATHERD_WORKER_H
 
 #include "Config/WorkerConfig.h"
 #include <boost/asio/generic/stream_protocol.hpp>
 #include <boost/process.hpp>
 #include <iostream>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 class Worker {
 protected:
@@ -55,4 +55,4 @@ public:
 };
 }
 
-#endif // SHEPHERD_WORKER_H
+#endif // GOATHERD_WORKER_H

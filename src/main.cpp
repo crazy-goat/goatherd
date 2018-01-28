@@ -2,11 +2,11 @@
 
 #include "LoadBalancer.h"
 
-using namespace crazygoat::shepherd;
+using namespace crazygoat::goatherd;
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    std::cerr << "usage: shepherd <config_file.json>" << std::endl;
+    std::cerr << "usage: goatherd <config_file.json>" << std::endl;
     return 1;
   }
 

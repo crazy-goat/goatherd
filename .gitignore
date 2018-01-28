@@ -3,5 +3,6 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 /.idea/
-shepherd
+goatherd
+goatherd.cbp
 cmake-build-*

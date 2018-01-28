@@ -2,8 +2,8 @@
 // Created by piotr on 26.11.17.
 //
 
-#ifndef SHEPHERD_SESSION_H
-#define SHEPHERD_SESSION_H
+#ifndef GOATHERD_SESSION_H
+#define GOATHERD_SESSION_H
 
 #include "Worker.h"
 #include <boost/asio.hpp>
@@ -11,7 +11,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 class Session : public boost::enable_shared_from_this<Session> {
 public:
   explicit Session(boost::asio::io_service &ios);
@@ -66,4 +66,4 @@ private:
 };
 }
 
-#endif // SHEPHERD_SESSION_H
+#endif // GOATHERD_SESSION_H

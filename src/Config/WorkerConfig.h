@@ -2,13 +2,13 @@
 // Created by piotr on 30.11.17.
 //
 
-#ifndef SHEPHERD_WORKERCONFIG_H
-#define SHEPHERD_WORKERCONFIG_H
+#ifndef GOATHERD_WORKERCONFIG_H
+#define GOATHERD_WORKERCONFIG_H
 
 #include "SocketParser.h"
 #include <boost/property_tree/ptree.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 class WorkerConfig {
 private:
   std::string socketType, command, params, socketPath, socketAddress;
@@ -42,4 +42,4 @@ public:
 };
 }
 
-#endif // SHEPHERD_WORKERCONFIG_H
+#endif // GOATHERD_WORKERCONFIG_H

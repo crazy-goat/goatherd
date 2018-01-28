@@ -2,13 +2,13 @@
 // Created by piotr on 05.12.17.
 //
 
-#ifndef SHEPHERD_DIRMONITOR_H
-#define SHEPHERD_DIRMONITOR_H
+#ifndef GOATHERD_DIRMONITOR_H
+#define GOATHERD_DIRMONITOR_H
 #include "Config/ConfigLoader.h"
 #include "WatchDog.h"
 #include <dir_monitor/dir_monitor.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 class DirectoryMonitor {
 private:
@@ -47,4 +47,4 @@ public:
   }
 };
 }
-#endif // SHEPHERD_DIRMONITOR_H
+#endif // GOATHERD_DIRMONITOR_H

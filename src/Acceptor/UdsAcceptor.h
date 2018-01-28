@@ -2,14 +2,14 @@
 // Created by piotr on 27.11.17.
 //
 
-#ifndef SHEPHERD_UDSACCEPTOR_H
-#define SHEPHERD_UDSACCEPTOR_H
+#ifndef GOATHERD_UDSACCEPTOR_H
+#define GOATHERD_UDSACCEPTOR_H
 
 #include "../Config/ConfigLoader.h"
 #include "Acceptor.h"
 #include <boost/asio/local/stream_protocol.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 class UdsAcceptor : public Acceptor {
 public:
   UdsAcceptor(boost::asio::io_service &io_service,
@@ -21,4 +21,4 @@ private:
   std::shared_ptr<boost::asio::local::stream_protocol::acceptor> acceptor;
 };
 }
-#endif // SHEPHERD_UDSACCEPTOR_H
+#endif // GOATHERD_UDSACCEPTOR_H

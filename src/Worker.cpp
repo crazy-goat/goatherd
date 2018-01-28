@@ -3,7 +3,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/local/stream_protocol.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 void Worker::spawn() {
   std::cout << "Spawning process on port:" << this->port << std::endl;

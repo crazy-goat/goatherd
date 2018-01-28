@@ -6,7 +6,7 @@
 #include <boost/asio/steady_timer.hpp>
 #include <boost/chrono.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 
 WatchDog::WatchDog(boost::asio::io_service &ios,
                    const std::shared_ptr<ConfigLoader> &config)

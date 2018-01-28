@@ -2,8 +2,8 @@
 // Created by piotr on 12.11.17.
 //
 
-#ifndef SHEPHERD_WATCHDOG_H
-#define SHEPHERD_WATCHDOG_H
+#ifndef GOATHERD_WATCHDOG_H
+#define GOATHERD_WATCHDOG_H
 
 #define BOOST_THREAD_PROVIDES_FUTURE
 #define BOOST_THREAD_PROVIDES_FUTURE_CONTINUATION
@@ -15,7 +15,7 @@
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <boost/thread/future.hpp>
 
-namespace crazygoat::shepherd {
+namespace crazygoat::goatherd {
 class WatchDog {
 protected:
   boost::asio::io_service &ios;
@@ -37,4 +37,4 @@ public:
 };
 }
 
-#endif // SHEPHERD_WATCHDOG_H
+#endif // GOATHERD_WATCHDOG_H
