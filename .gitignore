@@ -6,3 +6,5 @@ cmake_install.cmake
 goatherd
 goatherd.cbp
 cmake-build-*
+/CPackConfig.cmake
+/CPackSourceConfig.cmake
