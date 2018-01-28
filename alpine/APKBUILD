@@ -14,25 +14,9 @@ subpackages=""
 source="${pkgname}-${pkgver}.tar.gz::https://github.com/crazy-goat/$pkgname/archive/v$pkgver.tar.gz"
 builddir="$srcdir/${pkgname}-${pkgver}"
 
-prepare() {
-    default_prepare
-	cd "$builddir"
-    cd vendor
-    rm -rf boost dir_monitor
-    git clone https://github.com/berkus/dir_monitor.git
-    wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
-    tar -xf boost_1_65_1.tar.gz
-    rm boost_1_65_1.tar.gz
-    mv boost_1_65_1 boost
-    cd boost
-    ./bootstrap.sh || return 1
-    ./b2 headers || return 1
-    ./b2 release link=static -j4 || return 1
-}
-
 build() {
 	cd "$builddir"
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr .
+    cmake -DCMAKE_BUILD_TYPE=Release -DUSE_INTERNAL_BOOST=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr .
     make -j4
 }
 

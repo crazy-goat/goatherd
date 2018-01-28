@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-option(internalBoost "User internal Boost" OFF)
+option(USE_INTERNAL_BOOST "User internal Boost" OFF)
 
 project(shepherd)
 
@@ -21,7 +21,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/dir_monitor)
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 endif()
 
-if (${internalBoost})
+if (${USE_INTERNAL_BOOST})
     message("Downloading Boost")
     execute_process(COMMAND ./initboost.sh
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
