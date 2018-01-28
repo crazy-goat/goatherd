@@ -34,8 +34,8 @@ private:
 
   boost::shared_ptr<Session> session;
   std::shared_ptr<WatchDog> watchDog;
-  std::shared_ptr<Acceptor> acceptor;
-  std::shared_ptr<DirectoryMonitor> monitor;
+  std::unique_ptr<Acceptor> acceptor;
+  std::unique_ptr<DirectoryMonitor> monitor;
 };
 }
 
