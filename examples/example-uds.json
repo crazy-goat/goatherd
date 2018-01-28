@@ -3,8 +3,8 @@
   "workerCount": 5,
   "worker": {
     "command": "src/app-uds.php",
-    "params": "unix:///tmp/shepard.sock.%%socket%%",
-    "workerSocket": "uds:///tmp/shepard.sock",
+    "params": "unix:///tmp/goatherd.sock.%%socket%%",
+    "workerSocket": "uds:///tmp/goatherd.sock",
     "socketStartNumber": 0
   }
 }
