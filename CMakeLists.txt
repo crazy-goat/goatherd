@@ -47,7 +47,7 @@ else()
     find_package(Boost 1.64 COMPONENTS process filesystem system asio)
     target_link_libraries(goatherd PUBLIC
             Boost::filesystem
-            Boost::prcess
+            Boost::process
             Boost::asio
             Boost::system)
 endif()
