@@ -35,13 +35,14 @@ public:
       : config(std::move(config)), watchDog(std::move(watchDog)) {
     this->monitor = std::make_shared<boost::asio::dir_monitor>(ios);
 
-    if (!this->config->getWatchDir().empty()) {
-      boost::filesystem::path full_path(
-          boost::filesystem::current_path().string() + "/" +
-          this->config->getWatchDir());
-      this->monitor->add_directory(full_path.string());
+    if (!this->config->getWatchDirs().empty()) {
+        for (auto dir:this->config->getWatchDirs()) {
+            boost::filesystem::path full_path(
+                boost::filesystem::current_path().string() + "/" + dir);
+            this->monitor->add_directory(full_path.string());
+            std::cerr << "Watch dir: " << full_path.string() << std::endl;
+        }
 
-      std::cerr << "Watch dir: " << full_path.string() << std::endl;
       this->watch();
     }
   }

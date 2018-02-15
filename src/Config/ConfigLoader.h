@@ -18,7 +18,7 @@ protected:
   std::string serverSocketType;
   std::string serverSocketAddress;
   std::string serverSocketPath;
-  std::string watchDir;
+  std::vector<std::string> watchDir;
   std::shared_ptr<WorkerConfig> workerConfig;
 
 public:
@@ -31,9 +31,18 @@ public:
     this->serverSocketType = parser.getType();
     this->serverSocketAddress = parser.getAddress();
     this->serverSocketPath = parser.getPath();
+      auto dirs = config.get_child_optional("watchDir");
 
-    this->watchDir =
-        config.get_optional<std::string>("watchDir").get_value_or("");
+      if (dirs) {
+          if (dirs.get().empty()) {
+              this->watchDir.push_back(dirs.get().get_value<std::string>());
+          } else {
+              for (auto item : dirs.get()) {
+                  this->watchDir.push_back(item.second.get_value<std::string>());
+              }
+          }
+      }
+
     this->workerConfig =
         std::make_shared<WorkerConfig>(config.get_child("worker"));
 
@@ -53,7 +62,7 @@ public:
   }
 
   const std::string &getServerSocketPath() const { return serverSocketPath; }
-  const std::string &getWatchDir() const { return watchDir; }
+  const std::vector<std::string> &getWatchDirs() const { return watchDir; }
 };
 }
 #endif // PPPM_CONFIGLOADER_H

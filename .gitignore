@@ -8,3 +8,4 @@ goatherd.cbp
 cmake-build-*
 /CPackConfig.cmake
 /CPackSourceConfig.cmake
+build
